@@ -16,18 +16,21 @@ export const useSettingsStore = create<SettingsState>()(
       theme: "light",
       animationsEnabled: true,
       compactMode: false,
-      
-      toggleTheme: () => set((state) => ({ 
-        theme: state.theme === "light" ? "dark" : "light" 
-      })),
-      
-      toggleAnimations: () => set((state) => ({ 
-        animationsEnabled: !state.animationsEnabled 
-      })),
-      
-      toggleCompactMode: () => set((state) => ({ 
-        compactMode: !state.compactMode 
-      })),
+
+      toggleTheme: () =>
+        set((state) => ({
+          theme: state.theme === "light" ? "dark" : "light",
+        })),
+
+      toggleAnimations: () =>
+        set((state) => ({
+          animationsEnabled: !state.animationsEnabled,
+        })),
+
+      toggleCompactMode: () =>
+        set((state) => ({
+          compactMode: !state.compactMode,
+        })),
     }),
     {
       name: "settings-store",

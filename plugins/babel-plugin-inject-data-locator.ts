@@ -1,8 +1,8 @@
-import type {NodePath} from "@babel/traverse";
+import type { NodePath } from "@babel/traverse";
 import type * as BabelTypes from "@babel/types";
-import type {RawSourceMap} from "source-map-js"; // Added RawSourceMap type
+import type { RawSourceMap } from "source-map-js"; // Added RawSourceMap type
 
-import {SourceMapConsumer} from "source-map-js";
+import { SourceMapConsumer } from "source-map-js";
 
 // Define types for Babel file and state objects
 interface BabelFile {
@@ -28,9 +28,9 @@ interface CustomPluginOptions {
 }
 
 // Helper to create the plugin object, allows cleaner passing of `t` and options
-const createPluginLogic = (babel: {types: typeof BabelTypes}, options: CustomPluginOptions) => {
+const createPluginLogic = (babel: { types: typeof BabelTypes }, options: CustomPluginOptions) => {
   const t = babel.types;
-  const consumerHolder: {consumer?: SourceMapConsumer} = {};
+  const consumerHolder: { consumer?: SourceMapConsumer } = {};
 
   return {
     name: "inject-data-locator-original-source",
@@ -57,7 +57,7 @@ const createPluginLogic = (babel: {types: typeof BabelTypes}, options: CustomPlu
 
           console.warn(
             `[inject-data-locator-original-source] Failed to initialize SourceMapConsumer for ${file.opts.filename}:`,
-            error.message,
+            error.message
           );
           consumerHolder.consumer = undefined;
         }
@@ -86,7 +86,7 @@ const createPluginLogic = (babel: {types: typeof BabelTypes}, options: CustomPlu
         }
 
         const hasDataLocator = attributes.some(
-          (attr) => t.isJSXAttribute(attr) && attr.name.name === "data-locator",
+          (attr) => t.isJSXAttribute(attr) && attr.name.name === "data-locator"
         );
 
         if (!hasDataLocator && path.node.loc) {
@@ -98,7 +98,7 @@ const createPluginLogic = (babel: {types: typeof BabelTypes}, options: CustomPlu
             elementName = openingElement.name.property.name;
           }
 
-          const {start} = path.node.loc;
+          const { start } = path.node.loc;
           let finalLine = start.line; // 1-indexed
           let finalColumn = start.column; // 0-indexed
           let mapped = false;
@@ -125,7 +125,7 @@ const createPluginLogic = (babel: {types: typeof BabelTypes}, options: CustomPlu
 
               console.warn(
                 `[inject-data-locator-original-source] Error during source map lookup for ${elementName} in ${filename}:L${start.line}:C${start.column}`,
-                error.message,
+                error.message
               );
             }
           }
@@ -133,13 +133,13 @@ const createPluginLogic = (babel: {types: typeof BabelTypes}, options: CustomPlu
           const locatorValue = `${filePath}:${elementName}:${finalLine}:${finalColumn}`;
           const dataLocatorAttr = t.jsxAttribute(
             t.jsxIdentifier("data-locator"),
-            t.stringLiteral(locatorValue),
+            t.stringLiteral(locatorValue)
           );
 
           openingElement.attributes.push(dataLocatorAttr);
 
           console.log(
-            `[inject-data-locator-original-source] Added data-locator (${mapped ? "original" : "generated"}): ${locatorValue} to ${elementName} in ${filename}${mapped ? ` (gen L${start.line}:C${start.column})` : `(L${start.line}:C${start.column})`}`,
+            `[inject-data-locator-original-source] Added data-locator (${mapped ? "original" : "generated"}): ${locatorValue} to ${elementName} in ${filename}${mapped ? ` (gen L${start.line}:C${start.column})` : `(L${start.line}:C${start.column})`}`
           );
         }
       },
@@ -150,8 +150,8 @@ const createPluginLogic = (babel: {types: typeof BabelTypes}, options: CustomPlu
 // Babel plugin signature: a function that returns the plugin object.
 // Receives babel object (with types, etc.) as first argument, and plugin options as second.
 export default function (
-  babelAPI: {types: typeof BabelTypes; assertVersion: (version: number) => void},
-  options: CustomPluginOptions,
+  babelAPI: { types: typeof BabelTypes; assertVersion: (version: number) => void },
+  options: CustomPluginOptions
 ) {
   babelAPI.assertVersion(7); // Ensure compatibility with Babel 7+
 

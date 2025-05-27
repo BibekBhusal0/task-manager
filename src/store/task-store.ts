@@ -9,7 +9,7 @@ interface TaskState {
   viewOptions: ViewOptions;
   filter: TaskFilter;
   selectedMember: TeamMember | null;
-  
+
   // Actions
   addTask: (task: Task) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
@@ -24,11 +24,36 @@ interface TaskState {
 
 // Sample team members
 const initialMembers: TeamMember[] = [
-  { id: "1", name: "Alex Johnson", avatar: "https://img.heroui.chat/image/avatar?w=200&h=200&u=1", isOnline: true },
-  { id: "2", name: "Sam Taylor", avatar: "https://img.heroui.chat/image/avatar?w=200&h=200&u=2", isOnline: false },
-  { id: "3", name: "Jordan Lee", avatar: "https://img.heroui.chat/image/avatar?w=200&h=200&u=3", isOnline: true },
-  { id: "4", name: "Casey Morgan", avatar: "https://img.heroui.chat/image/avatar?w=200&h=200&u=4", isOnline: true },
-  { id: "5", name: "Riley Smith", avatar: "https://img.heroui.chat/image/avatar?w=200&h=200&u=5", isOnline: false },
+  {
+    id: "1",
+    name: "Alex Johnson",
+    avatar: "https://img.heroui.chat/image/avatar?w=200&h=200&u=1",
+    isOnline: true,
+  },
+  {
+    id: "2",
+    name: "Sam Taylor",
+    avatar: "https://img.heroui.chat/image/avatar?w=200&h=200&u=2",
+    isOnline: false,
+  },
+  {
+    id: "3",
+    name: "Jordan Lee",
+    avatar: "https://img.heroui.chat/image/avatar?w=200&h=200&u=3",
+    isOnline: true,
+  },
+  {
+    id: "4",
+    name: "Casey Morgan",
+    avatar: "https://img.heroui.chat/image/avatar?w=200&h=200&u=4",
+    isOnline: true,
+  },
+  {
+    id: "5",
+    name: "Riley Smith",
+    avatar: "https://img.heroui.chat/image/avatar?w=200&h=200&u=5",
+    isOnline: false,
+  },
 ];
 
 // Sample tasks
@@ -123,54 +148,59 @@ export const useTaskStore = create<TaskState>()(
       selectedMember: null,
 
       addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
-      
-      updateTask: (taskId, updates) => set((state) => ({
-        tasks: state.tasks.map((task) => 
-          task.id === taskId ? { ...task, ...updates } : task
-        ),
-      })),
-      
-      deleteTask: (taskId) => set((state) => ({
-        tasks: state.tasks.filter((task) => task.id !== taskId),
-      })),
-      
-      moveTask: (taskId, newStatus) => set((state) => ({
-        tasks: state.tasks.map((task) => 
-          task.id === taskId ? { ...task, status: newStatus } : task
-        ),
-      })),
-      
+
+      updateTask: (taskId, updates) =>
+        set((state) => ({
+          tasks: state.tasks.map((task) => (task.id === taskId ? { ...task, ...updates } : task)),
+        })),
+
+      deleteTask: (taskId) =>
+        set((state) => ({
+          tasks: state.tasks.filter((task) => task.id !== taskId),
+        })),
+
+      moveTask: (taskId, newStatus) =>
+        set((state) => ({
+          tasks: state.tasks.map((task) =>
+            task.id === taskId ? { ...task, status: newStatus } : task
+          ),
+        })),
+
       setViewType: (viewType) => set({ viewType }),
-      
-      updateViewOptions: (options) => set((state) => ({
-        viewOptions: { ...state.viewOptions, ...options },
-      })),
-      
-      updateFilter: (filter) => set((state) => ({
-        filter: { ...state.filter, ...filter },
-      })),
-      
-      selectMember: (member) => set({ 
-        selectedMember: member,
-        filter: { 
-          search: "",
-          tags: [],
-          assignedTo: member.id,
-          sortBy: "createdAt",
-          sortDirection: "desc",
-        }
-      }),
-      
-      clearSelectedMember: () => set({ 
-        selectedMember: null,
-        filter: { 
-          search: "",
-          tags: [],
-          assignedTo: null,
-          sortBy: "createdAt",
-          sortDirection: "desc",
-        }
-      }),
+
+      updateViewOptions: (options) =>
+        set((state) => ({
+          viewOptions: { ...state.viewOptions, ...options },
+        })),
+
+      updateFilter: (filter) =>
+        set((state) => ({
+          filter: { ...state.filter, ...filter },
+        })),
+
+      selectMember: (member) =>
+        set({
+          selectedMember: member,
+          filter: {
+            search: "",
+            tags: [],
+            assignedTo: member.id,
+            sortBy: "createdAt",
+            sortDirection: "desc",
+          },
+        }),
+
+      clearSelectedMember: () =>
+        set({
+          selectedMember: null,
+          filter: {
+            search: "",
+            tags: [],
+            assignedTo: null,
+            sortBy: "createdAt",
+            sortDirection: "desc",
+          },
+        }),
     }),
     {
       name: "task-store",

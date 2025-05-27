@@ -22,11 +22,11 @@ export default function App() {
   }, [theme]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Navbar maxWidth="full" className="border-b border-divider">
         <NavbarBrand>
           <div className="flex items-center gap-2">
-            <Icon icon="lucide:layout-grid" className="text-primary text-xl" />
+            <Icon icon="lucide:layout-grid" className="text-xl text-primary" />
             <p className="font-semibold text-inherit">TaskFlow</p>
           </div>
         </NavbarBrand>
@@ -36,10 +36,10 @@ export default function App() {
               <div className="text-sm text-default-500">
                 Filtered by: <span className="font-medium">{selectedMember.name}</span>
               </div>
-              <Button 
-                isIconOnly 
-                size="sm" 
-                variant="light" 
+              <Button
+                isIconOnly
+                size="sm"
+                variant="light"
                 onPress={clearSelectedMember}
                 className="text-default-500"
               >
@@ -48,9 +48,9 @@ export default function App() {
             </div>
           )}
           <Tooltip content="Add new task">
-            <Button 
-              isIconOnly 
-              variant="flat" 
+            <Button
+              isIconOnly
+              variant="flat"
               onPress={() => setIsAddTaskOpen(true)}
               className="text-default-600"
             >
@@ -58,9 +58,9 @@ export default function App() {
             </Button>
           </Tooltip>
           <Tooltip content="Team members">
-            <Button 
-              isIconOnly 
-              variant="flat" 
+            <Button
+              isIconOnly
+              variant="flat"
               onPress={() => setIsTeamPanelOpen(true)}
               className="text-default-600"
             >
@@ -68,23 +68,18 @@ export default function App() {
             </Button>
           </Tooltip>
           <Tooltip content="Settings">
-            <Button 
-              isIconOnly 
-              variant="flat" 
+            <Button
+              isIconOnly
+              variant="flat"
               onPress={() => setIsSettingsOpen(true)}
               className="text-default-600"
             >
               <Icon icon="lucide:settings" />
             </Button>
           </Tooltip>
-          <Tooltip content={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
-            <Button 
-              isIconOnly 
-              variant="flat" 
-              onPress={toggleTheme}
-              className="text-default-600"
-            >
-              <Icon icon={theme === 'dark' ? "lucide:sun" : "lucide:moon"} />
+          <Tooltip content={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}>
+            <Button isIconOnly variant="flat" onPress={toggleTheme} className="text-default-600">
+              <Icon icon={theme === "dark" ? "lucide:sun" : "lucide:moon"} />
             </Button>
           </Tooltip>
         </NavbarContent>
@@ -96,28 +91,19 @@ export default function App() {
 
       <AnimatePresence>
         {isAddTaskOpen && (
-          <AddTaskModal 
-            isOpen={isAddTaskOpen} 
-            onClose={() => setIsAddTaskOpen(false)} 
-          />
+          <AddTaskModal isOpen={isAddTaskOpen} onClose={() => setIsAddTaskOpen(false)} />
         )}
       </AnimatePresence>
 
       <AnimatePresence>
         {isTeamPanelOpen && (
-          <TeamMembersPanel 
-            isOpen={isTeamPanelOpen} 
-            onClose={() => setIsTeamPanelOpen(false)} 
-          />
+          <TeamMembersPanel isOpen={isTeamPanelOpen} onClose={() => setIsTeamPanelOpen(false)} />
         )}
       </AnimatePresence>
 
       <AnimatePresence>
         {isSettingsOpen && (
-          <SettingsModal 
-            isOpen={isSettingsOpen} 
-            onClose={() => setIsSettingsOpen(false)} 
-          />
+          <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
         )}
       </AnimatePresence>
     </div>

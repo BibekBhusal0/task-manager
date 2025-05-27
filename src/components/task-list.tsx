@@ -7,32 +7,32 @@ import { TaskListItem } from "./task-list-item";
 export const TaskList: React.FC = () => {
   const { tasks, filter, viewOptions } = useTaskStore();
   const { animationsEnabled } = useSettingsStore();
-  
+
   // Filter tasks based on current filter settings
   const filteredTasks = React.useMemo(() => {
-    let filtered = tasks.filter(task => {
+    let filtered = tasks.filter((task) => {
       // Filter by search term
       if (filter.search && !task.title.toLowerCase().includes(filter.search.toLowerCase())) {
         return false;
       }
-      
+
       // Filter by tags
-      if (filter.tags.length > 0 && !task.tags.some(tag => filter.tags.includes(tag))) {
+      if (filter.tags.length > 0 && !task.tags.some((tag) => filter.tags.includes(tag))) {
         return false;
       }
-      
+
       // Filter by assigned user
       if (filter.assignedTo && task.assignedTo !== filter.assignedTo) {
         return false;
       }
-      
+
       return true;
     });
-    
+
     // Sort tasks
     filtered = filtered.sort((a, b) => {
       if (filter.sortBy === "createdAt") {
-        return filter.sortDirection === "asc" 
+        return filter.sortDirection === "asc"
           ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
           : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       } else if (filter.sortBy === "dueDate") {
@@ -49,7 +49,7 @@ export const TaskList: React.FC = () => {
       }
       return 0;
     });
-    
+
     return filtered;
   }, [tasks, filter]);
 
@@ -68,11 +68,9 @@ export const TaskList: React.FC = () => {
               </React.Fragment>
             ))}
           </AnimatePresence>
-          
+
           {filteredTasks.length === 0 && (
-            <div className="text-center py-12 text-default-400">
-              No tasks match your filters
-            </div>
+            <div className="py-12 text-center text-default-400">No tasks match your filters</div>
           )}
         </motion.div>
       </CardBody>

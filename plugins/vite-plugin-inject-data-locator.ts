@@ -1,4 +1,4 @@
-import type {Plugin} from "vite";
+import type { Plugin } from "vite";
 
 import * as babel from "@babel/core";
 
@@ -32,7 +32,7 @@ export default function vitePluginInjectDataLocator(): Plugin {
               },
             ],
           ],
-          presets: [["@babel/preset-react", {runtime: "automatic"}], "@babel/preset-typescript"],
+          presets: [["@babel/preset-react", { runtime: "automatic" }], "@babel/preset-typescript"],
           sourceMaps: true,
         });
 

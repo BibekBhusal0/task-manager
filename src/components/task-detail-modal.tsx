@@ -1,5 +1,21 @@
 import React from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Textarea, Select, SelectItem, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Chip } from "@heroui/react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Input,
+  Textarea,
+  Select,
+  SelectItem,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Chip,
+} from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
 import { Task, TaskPriority, TaskStatus } from "../types/task";
@@ -15,55 +31,57 @@ interface TaskDetailModalProps {
 export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClose, task }) => {
   const { members, updateTask, deleteTask } = useTaskStore();
   const { animationsEnabled } = useSettingsStore();
-  
+
   const [title, setTitle] = React.useState(task.title);
   const [description, setDescription] = React.useState(task.description);
   const [status, setStatus] = React.useState<TaskStatus>(task.status);
   const [tags, setTags] = React.useState<string[]>(task.tags);
-  const [dueDate, setDueDate] = React.useState(task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : "");
+  const [dueDate, setDueDate] = React.useState(
+    task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : ""
+  );
   const [assignedTo, setAssignedTo] = React.useState<string>(task.assignedTo || "");
   const [priority, setPriority] = React.useState<TaskPriority>(task.priority);
   const [newTag, setNewTag] = React.useState("");
   const [errors, setErrors] = React.useState<Record<string, string>>({});
-  
+
   // Update form when task changes
   React.useEffect(() => {
     setTitle(task.title);
     setDescription(task.description);
     setStatus(task.status);
     setTags(task.tags);
-    setDueDate(task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : "");
+    setDueDate(task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : "");
     setAssignedTo(task.assignedTo || "");
     setPriority(task.priority);
     setNewTag("");
     setErrors({});
   }, [task]);
-  
+
   const handleAddTag = () => {
     if (newTag.trim() && !tags.includes(newTag.trim())) {
       setTags([...tags, newTag.trim()]);
       setNewTag("");
     }
   };
-  
+
   const handleRemoveTag = (tag: string) => {
-    setTags(tags.filter(t => t !== tag));
+    setTags(tags.filter((t) => t !== tag));
   };
-  
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!title.trim()) {
       newErrors.title = "Title is required";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
+
   const handleSubmit = () => {
     if (!validateForm()) return;
-    
+
     const updatedTask = {
       title,
       description,
@@ -73,22 +91,22 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
       assignedTo: assignedTo || null,
       priority,
     };
-    
+
     updateTask(task.id, updatedTask);
     onClose();
   };
-  
+
   const handleDelete = () => {
     deleteTask(task.id);
     onClose();
   };
-  
+
   const statusOptions = [
     { key: "todo", label: "To Do", icon: "lucide:list-todo" },
     { key: "in-progress", label: "In Progress", icon: "lucide:loader" },
     { key: "done", label: "Done", icon: "lucide:check" },
   ];
-  
+
   const priorityOptions = [
     { key: "low", label: "Low", color: "success" },
     { key: "medium", label: "Medium", color: "warning" },
@@ -96,39 +114,41 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
   ];
 
   return (
-    <Modal 
-      isOpen={isOpen} 
+    <Modal
+      isOpen={isOpen}
       onClose={onClose}
       placement="center"
       scrollBehavior="inside"
-      motionProps={animationsEnabled ? {
-        variants: {
-          enter: {
-            y: 0,
-            opacity: 1,
-            transition: {
-              duration: 0.3,
-              ease: [0.16, 1, 0.3, 1],
-            },
-          },
-          exit: {
-            y: 20,
-            opacity: 0,
-            transition: {
-              duration: 0.2,
-              ease: [0.16, 1, 0.3, 1],
-            },
-          },
-        },
-        initial: { y: 20, opacity: 0 },
-      } : undefined}
+      motionProps={
+        animationsEnabled
+          ? {
+              variants: {
+                enter: {
+                  y: 0,
+                  opacity: 1,
+                  transition: {
+                    duration: 0.3,
+                    ease: [0.16, 1, 0.3, 1],
+                  },
+                },
+                exit: {
+                  y: 20,
+                  opacity: 0,
+                  transition: {
+                    duration: 0.2,
+                    ease: [0.16, 1, 0.3, 1],
+                  },
+                },
+              },
+              initial: { y: 20, opacity: 0 },
+            }
+          : undefined
+      }
     >
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex flex-col gap-1">
-              Edit Task
-            </ModalHeader>
+            <ModalHeader className="flex flex-col gap-1">Edit Task</ModalHeader>
             <ModalBody>
               <div className="flex flex-col gap-4">
                 <Input
@@ -140,7 +160,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                   isInvalid={!!errors.title}
                   errorMessage={errors.title}
                 />
-                
+
                 <Textarea
                   label="Description"
                   placeholder="Enter task description"
@@ -148,7 +168,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                   onValueChange={setDescription}
                   minRows={3}
                 />
-                
+
                 <Select
                   label="Status"
                   placeholder="Select status"
@@ -156,8 +176,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                   onChange={(e) => setStatus(e.target.value as TaskStatus)}
                 >
                   {statusOptions.map((option) => (
-                    <SelectItem 
-                      key={option.key} 
+                    <SelectItem
+                      key={option.key}
                       value={option.key}
                       startContent={<Icon icon={option.icon} />}
                     >
@@ -165,21 +185,17 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                     </SelectItem>
                   ))}
                 </Select>
-                
+
                 <div>
-                  <p className="text-sm mb-1">Tags</p>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {tags.map(tag => (
-                      <Chip 
-                        key={tag} 
-                        onClose={() => handleRemoveTag(tag)}
-                        variant="flat"
-                      >
+                  <p className="mb-1 text-sm">Tags</p>
+                  <div className="mb-2 flex flex-wrap gap-2">
+                    {tags.map((tag) => (
+                      <Chip key={tag} onClose={() => handleRemoveTag(tag)} variant="flat">
                         #{tag}
                       </Chip>
                     ))}
                     {tags.length === 0 && (
-                      <span className="text-default-400 text-sm">No tags added</span>
+                      <span className="text-sm text-default-400">No tags added</span>
                     )}
                   </div>
                   <div className="flex gap-2">
@@ -188,7 +204,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                       value={newTag}
                       onValueChange={setNewTag}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
+                        if (e.key === "Enter") {
                           e.preventDefault();
                           handleAddTag();
                         }
@@ -198,7 +214,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                     <Button onPress={handleAddTag}>Add</Button>
                   </div>
                 </div>
-                
+
                 <Input
                   type="date"
                   label="Due Date"
@@ -206,7 +222,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
                 />
-                
+
                 <Select
                   label="Assigned To"
                   placeholder="Select team member"
@@ -214,16 +230,18 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                   onChange={(e) => setAssignedTo(e.target.value)}
                 >
                   {members.map((member) => (
-                    <SelectItem 
-                      key={member.id} 
+                    <SelectItem
+                      key={member.id}
                       value={member.id}
                       startContent={
                         <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${member.isOnline ? 'bg-success' : 'bg-default-300'}`} />
-                          <img 
-                            src={member.avatar} 
-                            alt={member.name} 
-                            className="w-6 h-6 rounded-full object-cover"
+                          <div
+                            className={`h-2 w-2 rounded-full ${member.isOnline ? "bg-success" : "bg-default-300"}`}
+                          />
+                          <img
+                            src={member.avatar}
+                            alt={member.name}
+                            className="h-6 w-6 rounded-full object-cover"
                           />
                         </div>
                       }
@@ -232,7 +250,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                     </SelectItem>
                   ))}
                 </Select>
-                
+
                 <Select
                   label="Priority"
                   placeholder="Select priority"
@@ -240,10 +258,10 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                   onChange={(e) => setPriority(e.target.value as TaskPriority)}
                 >
                   {priorityOptions.map((option) => (
-                    <SelectItem 
-                      key={option.key} 
+                    <SelectItem
+                      key={option.key}
                       value={option.key}
-                      startContent={<div className={`w-2 h-2 rounded-full bg-${option.color}`} />}
+                      startContent={<div className={`h-2 w-2 rounded-full bg-${option.color}`} />}
                     >
                       {option.label}
                     </SelectItem>
@@ -252,9 +270,9 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
               </div>
             </ModalBody>
             <ModalFooter>
-              <Button 
-                color="danger" 
-                variant="light" 
+              <Button
+                color="danger"
+                variant="light"
                 onPress={handleDelete}
                 startContent={<Icon icon="lucide:trash" className="text-sm" />}
               >

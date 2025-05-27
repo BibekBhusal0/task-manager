@@ -1,16 +1,24 @@
 import React from "react";
-import { Input, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Chip } from "@heroui/react";
+import {
+  Input,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+  Chip,
+} from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
 
 export const FilterToolbar: React.FC = () => {
   const { filter, updateFilter, tasks } = useTaskStore();
-  
+
   // Extract unique tags from all tasks
   const allTags = React.useMemo(() => {
     const tagSet = new Set<string>();
-    tasks.forEach(task => {
-      task.tags.forEach(tag => tagSet.add(tag));
+    tasks.forEach((task) => {
+      task.tags.forEach((tag) => tagSet.add(tag));
     });
     return Array.from(tagSet);
   }, [tasks]);
@@ -21,9 +29,9 @@ export const FilterToolbar: React.FC = () => {
 
   const handleTagSelect = (tag: string) => {
     const newTags = filter.tags.includes(tag)
-      ? filter.tags.filter(t => t !== tag)
+      ? filter.tags.filter((t) => t !== tag)
       : [...filter.tags, tag];
-    
+
     updateFilter({ tags: newTags });
   };
 
@@ -31,7 +39,7 @@ export const FilterToolbar: React.FC = () => {
     if (key === "reset") {
       updateFilter({
         sortBy: "createdAt",
-        sortDirection: "desc"
+        sortDirection: "desc",
       });
       return;
     }
@@ -45,15 +53,18 @@ export const FilterToolbar: React.FC = () => {
       search: "",
       tags: [],
       sortBy: "createdAt",
-      sortDirection: "desc"
+      sortDirection: "desc",
     });
   };
 
-  const hasActiveFilters = filter.search || filter.tags.length > 0 || 
-    (filter.sortBy !== "createdAt" || filter.sortDirection !== "desc");
+  const hasActiveFilters =
+    filter.search ||
+    filter.tags.length > 0 ||
+    filter.sortBy !== "createdAt" ||
+    filter.sortDirection !== "desc";
 
   return (
-    <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+    <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
       <div className="w-full sm:w-64 md:w-80">
         <Input
           placeholder="Search tasks..."
@@ -68,11 +79,11 @@ export const FilterToolbar: React.FC = () => {
         />
       </div>
 
-      <div className="flex flex-wrap gap-2 items-center">
+      <div className="flex flex-wrap items-center gap-2">
         <Dropdown>
           <DropdownTrigger>
-            <Button 
-              variant="flat" 
+            <Button
+              variant="flat"
               size="sm"
               startContent={<Icon icon="lucide:tag" className="text-sm" />}
             >
@@ -84,7 +95,7 @@ export const FilterToolbar: React.FC = () => {
               )}
             </Button>
           </DropdownTrigger>
-          <DropdownMenu 
+          <DropdownMenu
             aria-label="Tag filters"
             selectionMode="multiple"
             selectedKeys={new Set(filter.tags)}
@@ -92,7 +103,7 @@ export const FilterToolbar: React.FC = () => {
               updateFilter({ tags: Array.from(keys as Set<string>) });
             }}
           >
-            {allTags.map(tag => (
+            {allTags.map((tag) => (
               <DropdownItem key={tag}>#{tag}</DropdownItem>
             ))}
           </DropdownMenu>
@@ -100,18 +111,15 @@ export const FilterToolbar: React.FC = () => {
 
         <Dropdown>
           <DropdownTrigger>
-            <Button 
-              variant="flat" 
+            <Button
+              variant="flat"
               size="sm"
               startContent={<Icon icon="lucide:arrow-up-down" className="text-sm" />}
             >
               Sort
             </Button>
           </DropdownTrigger>
-          <DropdownMenu 
-            aria-label="Sort options"
-            onAction={handleSortChange}
-          >
+          <DropdownMenu aria-label="Sort options" onAction={handleSortChange}>
             <DropdownItem key="createdAt-desc" startContent={<Icon icon="lucide:calendar" />}>
               Newest first
             </DropdownItem>
@@ -124,15 +132,19 @@ export const FilterToolbar: React.FC = () => {
             <DropdownItem key="priority-desc" startContent={<Icon icon="lucide:flag" />}>
               Highest priority
             </DropdownItem>
-            <DropdownItem key="reset" startContent={<Icon icon="lucide:rotate-ccw" />} color="danger">
+            <DropdownItem
+              key="reset"
+              startContent={<Icon icon="lucide:rotate-ccw" />}
+              color="danger"
+            >
               Reset sorting
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
 
         {hasActiveFilters && (
-          <Button 
-            variant="flat" 
+          <Button
+            variant="flat"
             size="sm"
             color="danger"
             onPress={clearFilters}

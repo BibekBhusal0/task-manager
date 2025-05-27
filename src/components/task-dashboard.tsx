@@ -16,11 +16,11 @@ export const TaskDashboard: React.FC = () => {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <h1 className="text-2xl font-semibold">Tasks</h1>
           <div className="flex items-center gap-2">
-            <Tabs 
-              aria-label="View options" 
+            <Tabs
+              aria-label="View options"
               selectedKey={viewType}
               onSelectionChange={(key) => setViewType(key as any)}
               classNames={{
@@ -30,8 +30,8 @@ export const TaskDashboard: React.FC = () => {
               radius="full"
               size="sm"
             >
-              <Tab 
-                key="kanban" 
+              <Tab
+                key="kanban"
                 title={
                   <div className="flex items-center gap-1">
                     <Icon icon="lucide:layout-grid" className="text-sm" />
@@ -39,8 +39,8 @@ export const TaskDashboard: React.FC = () => {
                   </div>
                 }
               />
-              <Tab 
-                key="list" 
+              <Tab
+                key="list"
                 title={
                   <div className="flex items-center gap-1">
                     <Icon icon="lucide:list" className="text-sm" />
@@ -48,8 +48,8 @@ export const TaskDashboard: React.FC = () => {
                   </div>
                 }
               />
-              <Tab 
-                key="table" 
+              <Tab
+                key="table"
                 title={
                   <div className="flex items-center gap-1">
                     <Icon icon="lucide:table" className="text-sm" />
@@ -59,9 +59,9 @@ export const TaskDashboard: React.FC = () => {
               />
             </Tabs>
             <Tooltip content="View options">
-              <Button 
-                isIconOnly 
-                variant="flat" 
+              <Button
+                isIconOnly
+                variant="flat"
                 size="sm"
                 onPress={() => setIsViewOptionsOpen(true)}
               >
@@ -88,10 +88,7 @@ export const TaskDashboard: React.FC = () => {
         </motion.div>
       </AnimatePresence>
 
-      <ViewOptions 
-        isOpen={isViewOptionsOpen} 
-        onClose={() => setIsViewOptionsOpen(false)} 
-      />
+      <ViewOptions isOpen={isViewOptionsOpen} onClose={() => setIsViewOptionsOpen(false)} />
     </div>
   );
 };

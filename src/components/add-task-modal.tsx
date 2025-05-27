@@ -1,5 +1,21 @@
 import React from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Textarea, Select, SelectItem, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Chip } from "@heroui/react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Input,
+  Textarea,
+  Select,
+  SelectItem,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Chip,
+} from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
 import { TaskPriority, TaskStatus } from "../types/task";
@@ -14,7 +30,7 @@ interface AddTaskModalProps {
 export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) => {
   const { members, addTask } = useTaskStore();
   const { animationsEnabled } = useSettingsStore();
-  
+
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [status, setStatus] = React.useState<TaskStatus>("todo");
@@ -24,7 +40,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
   const [priority, setPriority] = React.useState<TaskPriority>("medium");
   const [newTag, setNewTag] = React.useState("");
   const [errors, setErrors] = React.useState<Record<string, string>>({});
-  
+
   // Reset form on close
   React.useEffect(() => {
     if (!isOpen) {
@@ -39,32 +55,32 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
       setErrors({});
     }
   }, [isOpen]);
-  
+
   const handleAddTag = () => {
     if (newTag.trim() && !tags.includes(newTag.trim())) {
       setTags([...tags, newTag.trim()]);
       setNewTag("");
     }
   };
-  
+
   const handleRemoveTag = (tag: string) => {
-    setTags(tags.filter(t => t !== tag));
+    setTags(tags.filter((t) => t !== tag));
   };
-  
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!title.trim()) {
       newErrors.title = "Title is required";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
+
   const handleSubmit = () => {
     if (!validateForm()) return;
-    
+
     const newTask = {
       id: `task-${Date.now()}`,
       title,
@@ -76,17 +92,17 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
       priority,
       createdAt: new Date().toISOString(),
     };
-    
+
     addTask(newTask);
     onClose();
   };
-  
+
   const statusOptions = [
     { key: "todo", label: "To Do", icon: "lucide:list-todo" },
     { key: "in-progress", label: "In Progress", icon: "lucide:loader" },
     { key: "done", label: "Done", icon: "lucide:check" },
   ];
-  
+
   const priorityOptions = [
     { key: "low", label: "Low", color: "success" },
     { key: "medium", label: "Medium", color: "warning" },
@@ -94,39 +110,41 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
   ];
 
   return (
-    <Modal 
-      isOpen={isOpen} 
+    <Modal
+      isOpen={isOpen}
       onClose={onClose}
       placement="center"
       scrollBehavior="inside"
-      motionProps={animationsEnabled ? {
-        variants: {
-          enter: {
-            y: 0,
-            opacity: 1,
-            transition: {
-              duration: 0.3,
-              ease: [0.16, 1, 0.3, 1],
-            },
-          },
-          exit: {
-            y: 20,
-            opacity: 0,
-            transition: {
-              duration: 0.2,
-              ease: [0.16, 1, 0.3, 1],
-            },
-          },
-        },
-        initial: { y: 20, opacity: 0 },
-      } : undefined}
+      motionProps={
+        animationsEnabled
+          ? {
+              variants: {
+                enter: {
+                  y: 0,
+                  opacity: 1,
+                  transition: {
+                    duration: 0.3,
+                    ease: [0.16, 1, 0.3, 1],
+                  },
+                },
+                exit: {
+                  y: 20,
+                  opacity: 0,
+                  transition: {
+                    duration: 0.2,
+                    ease: [0.16, 1, 0.3, 1],
+                  },
+                },
+              },
+              initial: { y: 20, opacity: 0 },
+            }
+          : undefined
+      }
     >
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex flex-col gap-1">
-              Add New Task
-            </ModalHeader>
+            <ModalHeader className="flex flex-col gap-1">Add New Task</ModalHeader>
             <ModalBody>
               <div className="flex flex-col gap-4">
                 <Input
@@ -138,7 +156,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                   isInvalid={!!errors.title}
                   errorMessage={errors.title}
                 />
-                
+
                 <Textarea
                   label="Description"
                   placeholder="Enter task description"
@@ -146,7 +164,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                   onValueChange={setDescription}
                   minRows={3}
                 />
-                
+
                 <Select
                   label="Status"
                   placeholder="Select status"
@@ -154,8 +172,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                   onChange={(e) => setStatus(e.target.value as TaskStatus)}
                 >
                   {statusOptions.map((option) => (
-                    <SelectItem 
-                      key={option.key} 
+                    <SelectItem
+                      key={option.key}
                       value={option.key}
                       startContent={<Icon icon={option.icon} />}
                     >
@@ -163,21 +181,17 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                     </SelectItem>
                   ))}
                 </Select>
-                
+
                 <div>
-                  <p className="text-sm mb-1">Tags</p>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {tags.map(tag => (
-                      <Chip 
-                        key={tag} 
-                        onClose={() => handleRemoveTag(tag)}
-                        variant="flat"
-                      >
+                  <p className="mb-1 text-sm">Tags</p>
+                  <div className="mb-2 flex flex-wrap gap-2">
+                    {tags.map((tag) => (
+                      <Chip key={tag} onClose={() => handleRemoveTag(tag)} variant="flat">
                         #{tag}
                       </Chip>
                     ))}
                     {tags.length === 0 && (
-                      <span className="text-default-400 text-sm">No tags added</span>
+                      <span className="text-sm text-default-400">No tags added</span>
                     )}
                   </div>
                   <div className="flex gap-2">
@@ -186,7 +200,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                       value={newTag}
                       onValueChange={setNewTag}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
+                        if (e.key === "Enter") {
                           e.preventDefault();
                           handleAddTag();
                         }
@@ -196,7 +210,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                     <Button onPress={handleAddTag}>Add</Button>
                   </div>
                 </div>
-                
+
                 <Input
                   type="date"
                   label="Due Date"
@@ -204,7 +218,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
                 />
-                
+
                 <Select
                   label="Assigned To"
                   placeholder="Select team member"
@@ -212,16 +226,18 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                   onChange={(e) => setAssignedTo(e.target.value)}
                 >
                   {members.map((member) => (
-                    <SelectItem 
-                      key={member.id} 
+                    <SelectItem
+                      key={member.id}
                       value={member.id}
                       startContent={
                         <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${member.isOnline ? 'bg-success' : 'bg-default-300'}`} />
-                          <img 
-                            src={member.avatar} 
-                            alt={member.name} 
-                            className="w-6 h-6 rounded-full object-cover"
+                          <div
+                            className={`h-2 w-2 rounded-full ${member.isOnline ? "bg-success" : "bg-default-300"}`}
+                          />
+                          <img
+                            src={member.avatar}
+                            alt={member.name}
+                            className="h-6 w-6 rounded-full object-cover"
                           />
                         </div>
                       }
@@ -230,7 +246,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                     </SelectItem>
                   ))}
                 </Select>
-                
+
                 <Select
                   label="Priority"
                   placeholder="Select priority"
@@ -238,10 +254,10 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                   onChange={(e) => setPriority(e.target.value as TaskPriority)}
                 >
                   {priorityOptions.map((option) => (
-                    <SelectItem 
-                      key={option.key} 
+                    <SelectItem
+                      key={option.key}
                       value={option.key}
-                      startContent={<div className={`w-2 h-2 rounded-full bg-${option.color}`} />}
+                      startContent={<div className={`h-2 w-2 rounded-full bg-${option.color}`} />}
                     >
                       {option.label}
                     </SelectItem>
