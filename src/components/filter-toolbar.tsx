@@ -1,0 +1,147 @@
+import React from "react";
+import { Input, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Chip } from "@heroui/react";
+import { Icon } from "@iconify/react";
+import { useTaskStore } from "../store/task-store";
+
+export const FilterToolbar: React.FC = () => {
+  const { filter, updateFilter, tasks } = useTaskStore();
+  
+  // Extract unique tags from all tasks
+  const allTags = React.useMemo(() => {
+    const tagSet = new Set<string>();
+    tasks.forEach(task => {
+      task.tags.forEach(tag => tagSet.add(tag));
+    });
+    return Array.from(tagSet);
+  }, [tasks]);
+
+  const handleSearchChange = (value: string) => {
+    updateFilter({ search: value });
+  };
+
+  const handleTagSelect = (tag: string) => {
+    const newTags = filter.tags.includes(tag)
+      ? filter.tags.filter(t => t !== tag)
+      : [...filter.tags, tag];
+    
+    updateFilter({ tags: newTags });
+  };
+
+  const handleSortChange = (key: string) => {
+    if (key === "reset") {
+      updateFilter({
+        sortBy: "createdAt",
+        sortDirection: "desc"
+      });
+      return;
+    }
+
+    const [sortBy, sortDirection] = key.split("-") as [any, any];
+    updateFilter({ sortBy, sortDirection });
+  };
+
+  const clearFilters = () => {
+    updateFilter({
+      search: "",
+      tags: [],
+      sortBy: "createdAt",
+      sortDirection: "desc"
+    });
+  };
+
+  const hasActiveFilters = filter.search || filter.tags.length > 0 || 
+    (filter.sortBy !== "createdAt" || filter.sortDirection !== "desc");
+
+  return (
+    <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+      <div className="w-full sm:w-64 md:w-80">
+        <Input
+          placeholder="Search tasks..."
+          value={filter.search}
+          onValueChange={handleSearchChange}
+          startContent={<Icon icon="lucide:search" className="text-default-400" />}
+          size="sm"
+          variant="bordered"
+          classNames={{
+            inputWrapper: "h-9",
+          }}
+        />
+      </div>
+
+      <div className="flex flex-wrap gap-2 items-center">
+        <Dropdown>
+          <DropdownTrigger>
+            <Button 
+              variant="flat" 
+              size="sm"
+              startContent={<Icon icon="lucide:tag" className="text-sm" />}
+            >
+              Tags
+              {filter.tags.length > 0 && (
+                <Chip size="sm" variant="flat" color="primary" className="ml-1">
+                  {filter.tags.length}
+                </Chip>
+              )}
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu 
+            aria-label="Tag filters"
+            selectionMode="multiple"
+            selectedKeys={new Set(filter.tags)}
+            onSelectionChange={(keys) => {
+              updateFilter({ tags: Array.from(keys as Set<string>) });
+            }}
+          >
+            {allTags.map(tag => (
+              <DropdownItem key={tag}>#{tag}</DropdownItem>
+            ))}
+          </DropdownMenu>
+        </Dropdown>
+
+        <Dropdown>
+          <DropdownTrigger>
+            <Button 
+              variant="flat" 
+              size="sm"
+              startContent={<Icon icon="lucide:arrow-up-down" className="text-sm" />}
+            >
+              Sort
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu 
+            aria-label="Sort options"
+            onAction={handleSortChange}
+          >
+            <DropdownItem key="createdAt-desc" startContent={<Icon icon="lucide:calendar" />}>
+              Newest first
+            </DropdownItem>
+            <DropdownItem key="createdAt-asc" startContent={<Icon icon="lucide:calendar" />}>
+              Oldest first
+            </DropdownItem>
+            <DropdownItem key="dueDate-asc" startContent={<Icon icon="lucide:clock" />}>
+              Due soon
+            </DropdownItem>
+            <DropdownItem key="priority-desc" startContent={<Icon icon="lucide:flag" />}>
+              Highest priority
+            </DropdownItem>
+            <DropdownItem key="reset" startContent={<Icon icon="lucide:rotate-ccw" />} color="danger">
+              Reset sorting
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+
+        {hasActiveFilters && (
+          <Button 
+            variant="flat" 
+            size="sm"
+            color="danger"
+            onPress={clearFilters}
+            startContent={<Icon icon="lucide:x" className="text-sm" />}
+          >
+            Clear
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+};
