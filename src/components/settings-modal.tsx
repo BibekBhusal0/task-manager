@@ -11,7 +11,8 @@ import {
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useSettingsStore } from "../store/settings-store";
-import { motion } from "framer-motion";
+import { getModalMotionProps } from "../utils/getModalMotionProps";
+// import { motion } from "framer-motion";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -35,29 +36,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
       placement="center"
       size="sm"
       motionProps={
-        animationsEnabled
-          ? {
-              variants: {
-                enter: {
-                  y: 0,
-                  opacity: 1,
-                  transition: {
-                    duration: 0.3,
-                    ease: [0.16, 1, 0.3, 1],
-                  },
-                },
-                exit: {
-                  y: 20,
-                  opacity: 0,
-                  transition: {
-                    duration: 0.2,
-                    ease: [0.16, 1, 0.3, 1],
-                  },
-                },
-              },
-              initial: { y: 20, opacity: 0 },
-            }
-          : undefined
+        getModalMotionProps(animationsEnabled)
       }
     >
       <ModalContent>

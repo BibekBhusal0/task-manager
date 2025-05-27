@@ -10,17 +10,13 @@ import {
   Textarea,
   Select,
   SelectItem,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
   Chip,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
 import { TaskPriority, TaskStatus } from "../types/task";
-import { motion } from "framer-motion";
 import { useSettingsStore } from "../store/settings-store";
+import { getModalMotionProps } from "../utils/getModalMotionProps";
 
 interface AddTaskModalProps {
   isOpen: boolean;
@@ -115,31 +111,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
       onClose={onClose}
       placement="center"
       scrollBehavior="inside"
-      motionProps={
-        animationsEnabled
-          ? {
-              variants: {
-                enter: {
-                  y: 0,
-                  opacity: 1,
-                  transition: {
-                    duration: 0.3,
-                    ease: [0.16, 1, 0.3, 1],
-                  },
-                },
-                exit: {
-                  y: 20,
-                  opacity: 0,
-                  transition: {
-                    duration: 0.2,
-                    ease: [0.16, 1, 0.3, 1],
-                  },
-                },
-              },
-              initial: { y: 20, opacity: 0 },
-            }
-          : undefined
-      }
+      motionProps={getModalMotionProps(animationsEnabled)}
     >
       <ModalContent>
         {(onClose) => (
@@ -174,7 +146,6 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                   {statusOptions.map((option) => (
                     <SelectItem
                       key={option.key}
-                      value={option.key}
                       startContent={<Icon icon={option.icon} />}
                     >
                       {option.label}
@@ -199,7 +170,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                       placeholder="Add a tag"
                       value={newTag}
                       onValueChange={setNewTag}
-                      onKeyDown={(e) => {
+                      onKeyDown={(e: any) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
                           handleAddTag();
@@ -228,7 +199,6 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                   {members.map((member) => (
                     <SelectItem
                       key={member.id}
-                      value={member.id}
                       startContent={
                         <div className="flex items-center gap-2">
                           <div
@@ -256,7 +226,6 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                   {priorityOptions.map((option) => (
                     <SelectItem
                       key={option.key}
-                      value={option.key}
                       startContent={<div className={`h-2 w-2 rounded-full bg-${option.color}`} />}
                     >
                       {option.label}

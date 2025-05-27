@@ -1,7 +1,6 @@
 import React from "react";
 import { Navbar, NavbarBrand, NavbarContent, Button, Tooltip } from "@heroui/react";
 import { Icon } from "@iconify/react";
-import { motion, AnimatePresence } from "framer-motion";
 import { TaskDashboard } from "./components/task-dashboard";
 import { AddTaskModal } from "./components/add-task-modal";
 import { TeamMembersPanel } from "./components/team-members-panel";
@@ -89,23 +88,9 @@ export default function App() {
         <TaskDashboard />
       </main>
 
-      <AnimatePresence>
-        {isAddTaskOpen && (
-          <AddTaskModal isOpen={isAddTaskOpen} onClose={() => setIsAddTaskOpen(false)} />
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {isTeamPanelOpen && (
-          <TeamMembersPanel isOpen={isTeamPanelOpen} onClose={() => setIsTeamPanelOpen(false)} />
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {isSettingsOpen && (
-          <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
-        )}
-      </AnimatePresence>
+      <AddTaskModal isOpen={isAddTaskOpen} onClose={() => setIsAddTaskOpen(false)} />
+      <TeamMembersPanel isOpen={isTeamPanelOpen} onClose={() => setIsTeamPanelOpen(false)} />
+      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </div>
   );
 }
