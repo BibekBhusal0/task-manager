@@ -4,6 +4,7 @@ import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from "
 import { useTaskStore } from "../store/task-store";
 import { TaskCard } from "./task-card";
 import { TaskStatus } from "../types/task";
+import { Task } from "../types/task";
 
 const columns: { id: TaskStatus; title: string }[] = [
   { id: "todo", title: "To Do" },
@@ -11,8 +12,12 @@ const columns: { id: TaskStatus; title: string }[] = [
   { id: "done", title: "Done" },
 ];
 
-export const KanbanBoard: React.FC = () => {
-  const { tasks, moveTask, filter, viewOptions } = useTaskStore();
+interface KanbanBoardProps {
+  filteredTasks: Task[];
+}
+
+export const KanbanBoard: React.FC<KanbanBoardProps> = ({ filteredTasks }) => {
+  const { tasks, moveTask, viewOptions } = useTaskStore();
 
   // Configure DnD sensors
   const sensors = useSensors(
@@ -34,28 +39,6 @@ export const KanbanBoard: React.FC = () => {
     }
   };
 
-  // Filter tasks based on current filter settings
-  const filteredTasks = React.useMemo(() => {
-    return tasks.filter((task) => {
-      // Filter by search term
-      if (filter.search && !task.title.toLowerCase().includes(filter.search.toLowerCase())) {
-        return false;
-      }
-
-      // Filter by tags
-      if (filter.tags.length > 0 && !task.tags.some((tag) => filter.tags.includes(tag))) {
-        return false;
-      }
-
-      // Filter by assigned user
-      if (filter.assignedTo && task.assignedTo !== filter.assignedTo) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [tasks, filter]);
-
   // Group tasks by status
   const tasksByStatus = React.useMemo(() => {
     const grouped = {
@@ -68,31 +51,8 @@ export const KanbanBoard: React.FC = () => {
       grouped[task.status].push(task);
     });
 
-    // Sort tasks within each column
-    Object.keys(grouped).forEach((status) => {
-      grouped[status as TaskStatus] = grouped[status as TaskStatus].sort((a, b) => {
-        if (filter.sortBy === "createdAt") {
-          return filter.sortDirection === "asc"
-            ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-            : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        } else if (filter.sortBy === "dueDate") {
-          if (!a.dueDate) return filter.sortDirection === "asc" ? 1 : -1;
-          if (!b.dueDate) return filter.sortDirection === "asc" ? -1 : 1;
-          return filter.sortDirection === "asc"
-            ? new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
-            : new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
-        } else if (filter.sortBy === "priority") {
-          const priorityValue = { low: 1, medium: 2, high: 3 };
-          return filter.sortDirection === "asc"
-            ? priorityValue[a.priority] - priorityValue[b.priority]
-            : priorityValue[b.priority] - priorityValue[a.priority];
-        }
-        return 0;
-      });
-    });
-
     return grouped;
-  }, [filteredTasks, filter]);
+  }, [filteredTasks]);
 
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>

@@ -18,55 +18,15 @@ import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
 import { formatDistanceToNow } from "../utils/date-utils";
 import { TaskDetailModal } from "./task-detail-modal";
+import { Task } from "../types/task";
 
-export const TaskTable: React.FC = () => {
-  const { tasks, filter, viewOptions, members, updateTask, deleteTask } = useTaskStore();
+interface TaskTableProps {
+  filteredTasks: Task[];
+}
+
+export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
+  const { viewOptions, members, updateTask, deleteTask } = useTaskStore();
   const [selectedTask, setSelectedTask] = React.useState<string | null>(null);
-
-  // Filter tasks based on current filter settings
-  const filteredTasks = React.useMemo(() => {
-    let filtered = tasks.filter((task) => {
-      // Filter by search term
-      if (filter.search && !task.title.toLowerCase().includes(filter.search.toLowerCase())) {
-        return false;
-      }
-
-      // Filter by tags
-      if (filter.tags.length > 0 && !task.tags.some((tag) => filter.tags.includes(tag))) {
-        return false;
-      }
-
-      // Filter by assigned user
-      if (filter.assignedTo && task.assignedTo !== filter.assignedTo) {
-        return false;
-      }
-
-      return true;
-    });
-
-    // Sort tasks
-    filtered = filtered.sort((a, b) => {
-      if (filter.sortBy === "createdAt") {
-        return filter.sortDirection === "asc"
-          ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-          : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      } else if (filter.sortBy === "dueDate") {
-        if (!a.dueDate) return filter.sortDirection === "asc" ? 1 : -1;
-        if (!b.dueDate) return filter.sortDirection === "asc" ? -1 : 1;
-        return filter.sortDirection === "asc"
-          ? new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
-          : new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
-      } else if (filter.sortBy === "priority") {
-        const priorityValue = { low: 1, medium: 2, high: 3 };
-        return filter.sortDirection === "asc"
-          ? priorityValue[a.priority] - priorityValue[b.priority]
-          : priorityValue[b.priority] - priorityValue[a.priority];
-      }
-      return 0;
-    });
-
-    return filtered;
-  }, [tasks, filter]);
 
   // Priority colors
   const priorityColors = {
@@ -220,7 +180,7 @@ export const TaskTable: React.FC = () => {
   ];
 
   // Find the selected task if any
-  const taskToEdit = selectedTask ? tasks.find((task) => task.id === selectedTask) : null;
+  const taskToEdit = selectedTask ? filteredTasks.find((task) => task.id === selectedTask) : null;
 
   return (
     <>
@@ -259,3 +219,4 @@ export const TaskTable: React.FC = () => {
     </>
   );
 };
+

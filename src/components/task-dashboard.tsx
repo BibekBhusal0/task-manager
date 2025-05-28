@@ -10,8 +10,52 @@ import { TaskTable } from "./task-table";
 import { ViewOptions } from "./view-options";
 
 export const TaskDashboard: React.FC = () => {
-  const { viewType, setViewType } = useTaskStore();
+  const { tasks, viewType, setViewType, filter } = useTaskStore();
   const [isViewOptionsOpen, setIsViewOptionsOpen] = React.useState(false);
+
+  const filteredTasks = React.useMemo(() => {
+    let filtered = tasks.filter((task) => {
+      // Filter by search term
+      if (filter.search && !task.title.toLowerCase().includes(filter.search.toLowerCase())) {
+        return false;
+      }
+
+      // Filter by tags
+      if (filter.tags.length > 0 && !task.tags.some((tag) => filter.tags.includes(tag))) {
+        return false;
+      }
+
+      // Filter by assigned user
+      if (filter.assignedTo && task.assignedTo !== filter.assignedTo) {
+        return false;
+      }
+
+      return true;
+    });
+
+    // Sort tasks
+    filtered = filtered.sort((a, b) => {
+      if (filter.sortBy === "createdAt") {
+        return filter.sortDirection === "asc"
+          ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      } else if (filter.sortBy === "dueDate") {
+        if (!a.dueDate) return filter.sortDirection === "asc" ? 1 : -1;
+        if (!b.dueDate) return filter.sortDirection === "asc" ? -1 : 1;
+        return filter.sortDirection === "asc"
+          ? new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+          : new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
+      } else if (filter.sortBy === "priority") {
+        const priorityValue = { low: 1, medium: 2, high: 3 };
+        return filter.sortDirection === "asc"
+          ? priorityValue[a.priority] - priorityValue[b.priority]
+          : priorityValue[b.priority] - priorityValue[a.priority];
+      }
+      return 0;
+    });
+
+    return filtered;
+  }, [tasks, filter]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -78,9 +122,9 @@ export const TaskDashboard: React.FC = () => {
           transition={{ duration: 0.2 }}
           className="w-full"
         >
-          {viewType === "kanban" && <KanbanBoard />}
-          {viewType === "list" && <TaskList />}
-          {viewType === "table" && <TaskTable />}
+          {viewType === "kanban" && <KanbanBoard filteredTasks={filteredTasks} />}
+          {viewType === "list" && <TaskList filteredTasks={filteredTasks} />}
+          {viewType === "table" && <TaskTable filteredTasks={filteredTasks} />}
         </motion.div>
       </AnimatePresence>
 
@@ -88,3 +132,4 @@ export const TaskDashboard: React.FC = () => {
     </div>
   );
 };
+
