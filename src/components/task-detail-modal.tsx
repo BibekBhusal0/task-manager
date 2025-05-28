@@ -10,17 +10,11 @@ import {
   Textarea,
   Select,
   SelectItem,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
   Chip,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
 import { Task, TaskPriority, TaskStatus } from "../types/task";
-import { motion } from "framer-motion";
-import { useSettingsStore } from "../store/settings-store";
 
 interface TaskDetailModalProps {
   isOpen: boolean;
@@ -30,7 +24,6 @@ interface TaskDetailModalProps {
 
 export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClose, task }) => {
   const { members, updateTask, deleteTask } = useTaskStore();
-  const { animationsEnabled } = useSettingsStore();
 
   const [title, setTitle] = React.useState(task.title);
   const [description, setDescription] = React.useState(task.description);
@@ -119,31 +112,6 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
       onClose={onClose}
       placement="center"
       scrollBehavior="inside"
-      motionProps={
-        animationsEnabled
-          ? {
-              variants: {
-                enter: {
-                  y: 0,
-                  opacity: 1,
-                  transition: {
-                    duration: 0.3,
-                    ease: [0.16, 1, 0.3, 1],
-                  },
-                },
-                exit: {
-                  y: 20,
-                  opacity: 0,
-                  transition: {
-                    duration: 0.2,
-                    ease: [0.16, 1, 0.3, 1],
-                  },
-                },
-              },
-              initial: { y: 20, opacity: 0 },
-            }
-          : undefined
-      }
     >
       <ModalContent>
         {(onClose) => (
@@ -178,7 +146,6 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                   {statusOptions.map((option) => (
                     <SelectItem
                       key={option.key}
-                      value={option.key}
                       startContent={<Icon icon={option.icon} />}
                     >
                       {option.label}
@@ -203,7 +170,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                       placeholder="Add a tag"
                       value={newTag}
                       onValueChange={setNewTag}
-                      onKeyDown={(e) => {
+                      onKeyDown={(e: any) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
                           handleAddTag();
@@ -232,7 +199,6 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                   {members.map((member) => (
                     <SelectItem
                       key={member.id}
-                      value={member.id}
                       startContent={
                         <div className="flex items-center gap-2">
                           <div
@@ -260,7 +226,6 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                   {priorityOptions.map((option) => (
                     <SelectItem
                       key={option.key}
-                      value={option.key}
                       startContent={<div className={`h-2 w-2 rounded-full bg-${option.color}`} />}
                     >
                       {option.label}

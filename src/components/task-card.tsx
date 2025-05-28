@@ -28,7 +28,6 @@ interface TaskCardProps {
 export const TaskCard: React.FC<TaskCardProps> = ({ task, viewOptions }) => {
   const { members, updateTask, deleteTask } = useTaskStore();
   const [isDetailOpen, setIsDetailOpen] = React.useState(false);
-  const { animationsEnabled } = useSettingsStore();
 
   // Set up draggable
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
@@ -37,9 +36,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, viewOptions }) => {
 
   const style = transform
     ? {
-        transform: CSS.Translate.toString(transform),
-        zIndex: 10,
-      }
+      transform: CSS.Translate.toString(transform),
+      zIndex: 10,
+    }
     : undefined;
 
   // Find assigned member
@@ -71,7 +70,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, viewOptions }) => {
   return (
     <>
       <motion.div
-        layout={animationsEnabled ? true : false}
+        // layout={animationsEnabled ? true : false}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9 }}
@@ -96,7 +95,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, viewOptions }) => {
                     variant="light"
                     size="sm"
                     className="text-default-400"
-                    onClick={(e) => e.stopPropagation()}
                   >
                     <Icon icon="lucide:more-horizontal" className="text-sm" />
                   </Button>
@@ -193,4 +191,3 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, viewOptions }) => {
   );
 };
 
-import { useSettingsStore } from "../store/settings-store";

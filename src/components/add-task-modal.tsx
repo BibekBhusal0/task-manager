@@ -15,8 +15,6 @@ import {
 import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
 import { TaskPriority, TaskStatus } from "../types/task";
-import { useSettingsStore } from "../store/settings-store";
-import { getModalMotionProps } from "../utils/getModalMotionProps";
 
 interface AddTaskModalProps {
   isOpen: boolean;
@@ -25,7 +23,6 @@ interface AddTaskModalProps {
 
 export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) => {
   const { members, addTask } = useTaskStore();
-  const { animationsEnabled } = useSettingsStore();
 
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
@@ -111,7 +108,6 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
       onClose={onClose}
       placement="center"
       scrollBehavior="inside"
-      motionProps={getModalMotionProps(animationsEnabled)}
     >
       <ModalContent>
         {(onClose) => (

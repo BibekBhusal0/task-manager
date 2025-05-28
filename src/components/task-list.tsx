@@ -1,12 +1,11 @@
 import React from "react";
 import { Card, CardBody, Divider } from "@heroui/react";
 import { useTaskStore } from "../store/task-store";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { TaskListItem } from "./task-list-item";
 
 export const TaskList: React.FC = () => {
   const { tasks, filter, viewOptions } = useTaskStore();
-  const { animationsEnabled } = useSettingsStore();
 
   // Filter tasks based on current filter settings
   const filteredTasks = React.useMemo(() => {
@@ -56,9 +55,7 @@ export const TaskList: React.FC = () => {
   return (
     <Card>
       <CardBody className="p-0">
-        <motion.div
-          layout={animationsEnabled ? true : false}
-          transition={{ type: "spring", damping: 30, stiffness: 200 }}
+        <div
         >
           <AnimatePresence>
             {filteredTasks.map((task, index) => (
@@ -72,10 +69,9 @@ export const TaskList: React.FC = () => {
           {filteredTasks.length === 0 && (
             <div className="py-12 text-center text-default-400">No tasks match your filters</div>
           )}
-        </motion.div>
+        </div>
       </CardBody>
     </Card>
   );
 };
 
-import { useSettingsStore } from "../store/settings-store";

@@ -8,7 +8,6 @@ import {
   TableCell,
   Chip,
   Avatar,
-  Tooltip,
   Button,
   Dropdown,
   DropdownTrigger,
@@ -232,7 +231,7 @@ export const TaskTable: React.FC = () => {
           base: "border border-divider rounded-medium overflow-hidden",
           th: "bg-default-50",
         }}
-        onRowAction={setSelectedTask}
+        onRowAction={(key: string) => setSelectedTask(key)}
       >
         <TableHeader columns={columns}>
           {(column) => (

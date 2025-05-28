@@ -35,9 +35,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
       onClose={onClose}
       placement="center"
       size="sm"
-      motionProps={
-        getModalMotionProps(animationsEnabled)
-      }
+    // motionProps={
+    //   getModalMotionProps(animationsEnabled)
+    // }
     >
       <ModalContent>
         {(onClose) => (

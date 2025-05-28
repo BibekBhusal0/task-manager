@@ -24,7 +24,6 @@ interface TaskListItemProps {
 export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions }) => {
   const { members, updateTask, deleteTask } = useTaskStore();
   const [isDetailOpen, setIsDetailOpen] = React.useState(false);
-  const { animationsEnabled } = useSettingsStore();
 
   // Find assigned member
   const assignedMember = task.assignedTo
@@ -62,7 +61,7 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
   return (
     <>
       <motion.div
-        layout={animationsEnabled}
+        // layout={animationsEnabled}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9 }}
@@ -139,7 +138,6 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
                   variant="light"
                   size="sm"
                   className="text-default-400"
-                  onClick={(e) => e.stopPropagation()}
                 >
                   <Icon icon="lucide:more-horizontal" className="text-sm" />
                 </Button>
@@ -192,4 +190,3 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
   );
 };
 
-import { useSettingsStore } from "../store/settings-store";

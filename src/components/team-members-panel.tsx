@@ -11,8 +11,6 @@ import {
   Avatar,
 } from "@heroui/react";
 import { useTaskStore } from "../store/task-store";
-import { useSettingsStore } from "../store/settings-store";
-import { getModalMotionProps } from "../utils/getModalMotionProps";
 
 interface TeamMembersPanelProps {
   isOpen: boolean;
@@ -21,7 +19,6 @@ interface TeamMembersPanelProps {
 
 export const TeamMembersPanel: React.FC<TeamMembersPanelProps> = ({ isOpen, onClose }) => {
   const { members, selectMember } = useTaskStore();
-  const { animationsEnabled } = useSettingsStore();
 
   const handleSelectMember = (member: any) => {
     selectMember(member);
@@ -34,7 +31,6 @@ export const TeamMembersPanel: React.FC<TeamMembersPanelProps> = ({ isOpen, onCl
       onClose={onClose}
       placement="center"
       size="sm"
-      motionProps={getModalMotionProps(animationsEnabled)}
     >
       <ModalContent>
         {(onClose) => (

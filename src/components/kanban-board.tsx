@@ -4,7 +4,6 @@ import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from "
 import { useTaskStore } from "../store/task-store";
 import { TaskCard } from "./task-card";
 import { TaskStatus } from "../types/task";
-import { motion } from "framer-motion";
 
 const columns: { id: TaskStatus; title: string }[] = [
   { id: "todo", title: "To Do" },
@@ -14,7 +13,6 @@ const columns: { id: TaskStatus; title: string }[] = [
 
 export const KanbanBoard: React.FC = () => {
   const { tasks, moveTask, filter, viewOptions } = useTaskStore();
-  const { animationsEnabled } = useSettingsStore();
 
   // Configure DnD sensors
   const sensors = useSensors(
@@ -109,10 +107,8 @@ export const KanbanBoard: React.FC = () => {
             </CardHeader>
             <Divider />
             <CardBody className="max-h-[calc(100vh-220px)] overflow-y-auto p-3">
-              <motion.div
+              <div
                 className="flex flex-col gap-3"
-                layout={animationsEnabled ? true : false}
-                transition={{ type: "spring", damping: 30, stiffness: 200 }}
               >
                 {tasksByStatus[column.id].map((task) => (
                   <TaskCard key={task.id} task={task} viewOptions={viewOptions} />
@@ -120,7 +116,7 @@ export const KanbanBoard: React.FC = () => {
                 {tasksByStatus[column.id].length === 0 && (
                   <div className="py-8 text-center text-sm text-default-400">No tasks</div>
                 )}
-              </motion.div>
+              </div>
             </CardBody>
           </Card>
         ))}
@@ -129,4 +125,3 @@ export const KanbanBoard: React.FC = () => {
   );
 };
 
-import { useSettingsStore } from "../store/settings-store";

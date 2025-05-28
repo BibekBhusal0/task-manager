@@ -4,21 +4,17 @@ import { Icon } from "@iconify/react";
 import { TaskDashboard } from "./components/task-dashboard";
 import { AddTaskModal } from "./components/add-task-modal";
 import { TeamMembersPanel } from "./components/team-members-panel";
-import { SettingsModal } from "./components/settings-modal";
 import { useTaskStore } from "./store/task-store";
-import { useSettingsStore } from "./store/settings-store";
+import { useTheme } from "@heroui/use-theme";
 
 export default function App() {
   const [isAddTaskOpen, setIsAddTaskOpen] = React.useState(false);
   const [isTeamPanelOpen, setIsTeamPanelOpen] = React.useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
-  const { theme, toggleTheme } = useSettingsStore();
   const { selectedMember, clearSelectedMember } = useTaskStore();
-
-  // Apply theme from local storage on mount
-  React.useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-  }, [theme]);
+  const { theme, setTheme } = useTheme();
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark')
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -66,16 +62,6 @@ export default function App() {
               <Icon icon="lucide:users" />
             </Button>
           </Tooltip>
-          <Tooltip content="Settings">
-            <Button
-              isIconOnly
-              variant="flat"
-              onPress={() => setIsSettingsOpen(true)}
-              className="text-default-600"
-            >
-              <Icon icon="lucide:settings" />
-            </Button>
-          </Tooltip>
           <Tooltip content={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}>
             <Button isIconOnly variant="flat" onPress={toggleTheme} className="text-default-600">
               <Icon icon={theme === "dark" ? "lucide:sun" : "lucide:moon"} />
@@ -90,7 +76,6 @@ export default function App() {
 
       <AddTaskModal isOpen={isAddTaskOpen} onClose={() => setIsAddTaskOpen(false)} />
       <TeamMembersPanel isOpen={isTeamPanelOpen} onClose={() => setIsTeamPanelOpen(false)} />
-      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </div>
   );
 }

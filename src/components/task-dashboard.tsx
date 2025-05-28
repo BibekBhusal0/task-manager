@@ -23,10 +23,6 @@ export const TaskDashboard: React.FC = () => {
               aria-label="View options"
               selectedKey={viewType}
               onSelectionChange={(key) => setViewType(key as any)}
-              classNames={{
-                tabList: "gap-2",
-                tab: "h-9 px-3 data-[selected=true]:bg-default-100",
-              }}
               radius="full"
               size="sm"
             >
