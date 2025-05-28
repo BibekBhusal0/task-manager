@@ -8,24 +8,20 @@ import {
   TableCell,
   Chip,
   Avatar,
-  Button,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
 import { formatDistanceToNow } from "../utils/date-utils";
 import { TaskDetailModal } from "./task-detail-modal";
 import { Task } from "../types/task";
+import { TaskActionsDropdown } from "./task-actions-dropdown";
 
 interface TaskTableProps {
   filteredTasks: Task[];
 }
 
 export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
-  const { viewOptions, members, updateTask, deleteTask } = useTaskStore();
+  const { viewOptions, members, } = useTaskStore();
   const [selectedTask, setSelectedTask] = React.useState<string | null>(null);
 
   // Priority colors
@@ -40,14 +36,6 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
     todo: { color: "default", icon: "lucide:list-todo" },
     "in-progress": { color: "primary", icon: "lucide:loader" },
     done: { color: "success", icon: "lucide:check" },
-  };
-
-  const handleStatusChange = (taskId: string, status: string) => {
-    updateTask(taskId, { status: status as any });
-  };
-
-  const handleDelete = (taskId: string) => {
-    deleteTask(taskId);
   };
 
   const renderCell = (task: any, columnKey: string) => {
@@ -116,51 +104,7 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
       case "actions":
         return (
           <div className="flex justify-end">
-            <Dropdown placement="bottom-end">
-              <DropdownTrigger>
-                <Button isIconOnly variant="light" size="sm">
-                  <Icon icon="lucide:more-horizontal" className="text-sm" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Task actions">
-                <DropdownItem
-                  key="edit"
-                  startContent={<Icon icon="lucide:edit" className="text-sm" />}
-                  onPress={() => setSelectedTask(task.id)}
-                >
-                  Edit
-                </DropdownItem>
-                <DropdownItem
-                  key="todo"
-                  startContent={<Icon icon="lucide:list-todo" className="text-sm" />}
-                  onPress={() => handleStatusChange(task.id, "todo")}
-                >
-                  Move to To Do
-                </DropdownItem>
-                <DropdownItem
-                  key="in-progress"
-                  startContent={<Icon icon="lucide:loader" className="text-sm" />}
-                  onPress={() => handleStatusChange(task.id, "in-progress")}
-                >
-                  Move to In Progress
-                </DropdownItem>
-                <DropdownItem
-                  key="done"
-                  startContent={<Icon icon="lucide:check" className="text-sm" />}
-                  onPress={() => handleStatusChange(task.id, "done")}
-                >
-                  Move to Done
-                </DropdownItem>
-                <DropdownItem
-                  key="delete"
-                  color="danger"
-                  startContent={<Icon icon="lucide:trash" className="text-sm" />}
-                  onPress={() => handleDelete(task.id)}
-                >
-                  Delete
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+            <TaskActionsDropdown   onEdit={ () => setSelectedTask(task.id)} task ={task}/>
           </div>
         );
       default:
@@ -186,11 +130,6 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
     <>
       <Table
         aria-label="Tasks table"
-        removeWrapper
-        classNames={{
-          base: "border border-divider rounded-medium overflow-hidden",
-          th: "bg-default-50",
-        }}
         onRowAction={(key: string) => setSelectedTask(key)}
       >
         <TableHeader columns={columns}>

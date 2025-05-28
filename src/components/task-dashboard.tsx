@@ -113,7 +113,7 @@ export const TaskDashboard: React.FC = () => {
         <FilterToolbar />
       </div>
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="popLayout">
         <motion.div
           key={viewType}
           initial={{ opacity: 0, y: 10 }}

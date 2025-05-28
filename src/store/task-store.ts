@@ -14,7 +14,7 @@ interface TaskState {
   addTask: (task: Task) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   deleteTask: (taskId: string) => void;
-  moveTask: (taskId: string, newStatus: TaskStatus) => void;
+  changeStatus: (taskId: string, newStatus: TaskStatus) => void;
   setViewType: (viewType: ViewType) => void;
   updateViewOptions: (options: Partial<ViewOptions>) => void;
   updateFilter: (filter: Partial<TaskFilter>) => void;
@@ -159,7 +159,7 @@ export const useTaskStore = create<TaskState>()(
           tasks: state.tasks.filter((task) => task.id !== taskId),
         })),
 
-      moveTask: (taskId, newStatus) =>
+      changeStatus: (taskId, newStatus) =>
         set((state) => ({
           tasks: state.tasks.map((task) =>
             task.id === taskId ? { ...task, status: newStatus } : task

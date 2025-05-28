@@ -1,11 +1,6 @@
 import React from "react";
 import {
   Chip,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Button,
   Tooltip,
   Avatar,
 } from "@heroui/react";
@@ -15,6 +10,7 @@ import { useTaskStore } from "../store/task-store";
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "../utils/date-utils";
 import { TaskDetailModal } from "./task-detail-modal";
+import { TaskActionsDropdown } from "./task-actions-dropdown";
 
 interface TaskListItemProps {
   task: Task;
@@ -22,7 +18,7 @@ interface TaskListItemProps {
 }
 
 export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions }) => {
-  const { members, updateTask, deleteTask } = useTaskStore();
+  const { members, } = useTaskStore();
   const [isDetailOpen, setIsDetailOpen] = React.useState(false);
 
   // Find assigned member
@@ -48,14 +44,6 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
     todo: { color: "default", icon: "lucide:list-todo" },
     "in-progress": { color: "primary", icon: "lucide:loader" },
     done: { color: "success", icon: "lucide:check" },
-  };
-
-  const handleStatusChange = (status: string) => {
-    updateTask(task.id, { status: status as any });
-  };
-
-  const handleDelete = () => {
-    deleteTask(task.id);
   };
 
   return (
@@ -131,56 +119,10 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
               </Tooltip>
             )}
 
-            <Dropdown placement="bottom-end">
-              <DropdownTrigger>
-                <Button
-                  isIconOnly
-                  variant="light"
-                  size="sm"
-                  className="text-default-400"
-                >
-                  <Icon icon="lucide:more-horizontal" className="text-sm" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Task actions">
-                <DropdownItem
-                  key="edit"
-                  startContent={<Icon icon="lucide:edit" className="text-sm" />}
-                  onPress={() => setIsDetailOpen(true)}
-                >
-                  Edit
-                </DropdownItem>
-                <DropdownItem
-                  key="todo"
-                  startContent={<Icon icon="lucide:list-todo" className="text-sm" />}
-                  onPress={() => handleStatusChange("todo")}
-                >
-                  Move to To Do
-                </DropdownItem>
-                <DropdownItem
-                  key="in-progress"
-                  startContent={<Icon icon="lucide:loader" className="text-sm" />}
-                  onPress={() => handleStatusChange("in-progress")}
-                >
-                  Move to In Progress
-                </DropdownItem>
-                <DropdownItem
-                  key="done"
-                  startContent={<Icon icon="lucide:check" className="text-sm" />}
-                  onPress={() => handleStatusChange("done")}
-                >
-                  Move to Done
-                </DropdownItem>
-                <DropdownItem
-                  key="delete"
-                  color="danger"
-                  startContent={<Icon icon="lucide:trash" className="text-sm" />}
-                  onPress={handleDelete}
-                >
-                  Delete
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+            <TaskActionsDropdown
+              task={task}
+              onEdit={() => setIsDetailOpen(true)}
+            />
           </div>
         </div>
       </motion.div>

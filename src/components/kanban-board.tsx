@@ -17,7 +17,7 @@ interface KanbanBoardProps {
 }
 
 export const KanbanBoard: React.FC<KanbanBoardProps> = ({ filteredTasks }) => {
-  const { tasks, moveTask, viewOptions } = useTaskStore();
+  const { tasks, changeStatus: moveTask, viewOptions } = useTaskStore();
 
   // Configure DnD sensors
   const sensors = useSensors(
