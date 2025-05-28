@@ -16,6 +16,24 @@ export default function App() {
     setTheme(theme === 'dark' ? 'light' : 'dark')
   }
 
+  const navButtons = [
+    {
+      content: "Add new task",
+      icon: "lucide:plus",
+      onPress: () => setIsAddTaskOpen(true),
+    },
+    {
+      content: "Team members",
+      icon: "lucide:users",
+      onPress: () => setIsTeamPanelOpen(true),
+    },
+    {
+      content: `Switch to ${theme === "dark" ? "light" : "dark"} mode`,
+      icon: theme === "dark" ? "lucide:sun" : "lucide:moon",
+      onPress: toggleTheme,
+    },
+  ];
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Navbar maxWidth="full" className="border-b border-divider">
@@ -42,31 +60,18 @@ export default function App() {
               </Button>
             </div>
           )}
-          <Tooltip content="Add new task">
-            <Button
-              isIconOnly
-              variant="flat"
-              onPress={() => setIsAddTaskOpen(true)}
-              className="text-default-600"
-            >
-              <Icon icon="lucide:plus" />
-            </Button>
-          </Tooltip>
-          <Tooltip content="Team members">
-            <Button
-              isIconOnly
-              variant="flat"
-              onPress={() => setIsTeamPanelOpen(true)}
-              className="text-default-600"
-            >
-              <Icon icon="lucide:users" />
-            </Button>
-          </Tooltip>
-          <Tooltip content={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}>
-            <Button isIconOnly variant="flat" onPress={toggleTheme} className="text-default-600">
-              <Icon icon={theme === "dark" ? "lucide:sun" : "lucide:moon"} />
-            </Button>
-          </Tooltip>
+          {navButtons.map((button , i) => (
+            <Tooltip key={i} content={button.content}>
+              <Button
+                isIconOnly
+                variant="flat"
+                onPress={button.onPress}
+                className = 'text-lg'
+              >
+                <Icon icon={button.icon} />
+              </Button>
+            </Tooltip>
+          ))}
         </NavbarContent>
       </Navbar>
 
@@ -79,3 +84,4 @@ export default function App() {
     </div>
   );
 }
+
