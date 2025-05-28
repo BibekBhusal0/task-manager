@@ -6,15 +6,15 @@ import {
   Tooltip,
   Avatar,
 } from "@heroui/react";
-import { Icon } from "@iconify/react";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { Task } from "../types/task";
 import { useTaskStore } from "../store/task-store";
 import { motion } from "framer-motion";
-import { formatDistanceToNow } from "../utils/date-utils";
 import { TaskDetailModal } from "./task-detail-modal";
-import { PriorityChip, TaskActionsDropdown } from "./task-actions-dropdown";
+import { TaskActionsDropdown } from "./task-actions-dropdown";
+import { PriorityChip } from "./priority-chip";
+import { DueDateChip } from "./due-date";
 
 interface TaskCardProps {
   task: Task;
@@ -39,8 +39,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, viewOptions }) => {
   const assignedMember = task.assignedTo
     ? members.find((member) => member.id === task.assignedTo)
     : null;
-  const formattedDueDate = task.dueDate ? formatDistanceToNow(new Date(task.dueDate)) : null;
-  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date();
 
   return (
     <>
@@ -96,16 +94,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, viewOptions }) => {
                 )}
               </div>
 
-              {viewOptions.showDueDate && formattedDueDate && (
-                <Chip
-                  size="sm"
-                  variant="flat"
-                  color={isOverdue ? "danger" : "default"}
-                  startContent={<Icon icon="lucide:clock" className="text-xs" />}
-                  className="text-xs"
-                >
-                  {formattedDueDate}
-                </Chip>
+              {viewOptions.showDueDate && task.dueDate && (
+                <DueDateChip dueDate={task.dueDate} />
               )}
             </div>
           </CardBody>

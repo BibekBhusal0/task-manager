@@ -1,9 +1,9 @@
-
 import React from "react";
 import { Chip, Tooltip } from "@heroui/react";
+import { TaskPriority } from "../types/task";
 
 interface PriorityChipProps {
-  priority: "low" | "medium" | "high";
+  priority: TaskPriority
 }
 
 const priorityColors = {

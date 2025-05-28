@@ -9,12 +9,13 @@ import {
   Chip,
   Avatar,
 } from "@heroui/react";
-import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
-import { formatDistanceToNow } from "../utils/date-utils";
 import { TaskDetailModal } from "./task-detail-modal";
 import { Task } from "../types/task";
 import { TaskActionsDropdown } from "./task-actions-dropdown";
+import { StatusChip } from "./status-chip";
+import { PriorityChip } from "./priority-chip";
+import { DueDateChip } from "./due-date";
 
 interface TaskTableProps {
   filteredTasks: Task[];
@@ -24,20 +25,6 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
   const { viewOptions, members, } = useTaskStore();
   const [selectedTask, setSelectedTask] = React.useState<string | null>(null);
 
-  // Priority colors
-  const priorityColors = {
-    low: "success",
-    medium: "warning",
-    high: "danger",
-  };
-
-  // Status colors and icons
-  const statusConfig = {
-    todo: { color: "default", icon: "lucide:list-todo" },
-    "in-progress": { color: "primary", icon: "lucide:loader" },
-    done: { color: "success", icon: "lucide:check" },
-  };
-
   const renderCell = (task: any, columnKey: string) => {
     const cellValue = task[columnKey];
 
@@ -46,14 +33,7 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
         return <div className="font-medium">{task.title}</div>;
       case "status":
         return (
-          <Chip
-            color={statusConfig[task.status].color as any}
-            variant="flat"
-            startContent={<Icon icon={statusConfig[task.status].icon} className="text-xs" />}
-            size="sm"
-          >
-            {task.status.replace("-", " ")}
-          </Chip>
+          <StatusChip status={task.status} />
         );
       case "tags":
         return (
@@ -83,28 +63,15 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
           <span className="text-sm text-default-400">Unassigned</span>
         );
       case "dueDate":
-        return task.dueDate ? (
-          <Chip
-            size="sm"
-            variant="flat"
-            color={new Date(task.dueDate) < new Date() ? "danger" : "default"}
-            startContent={<Icon icon="lucide:clock" className="text-xs" />}
-          >
-            {formatDistanceToNow(new Date(task.dueDate))}
-          </Chip>
-        ) : (
-          <span className="text-sm text-default-400">No due date</span>
-        );
+        return <DueDateChip dueDate={task.dueDate} />
       case "priority":
         return (
-          <Chip size="sm" color={priorityColors[task.priority] as any} variant="dot">
-            {task.priority}
-          </Chip>
+          <PriorityChip priority={task.priority} />
         );
       case "actions":
         return (
           <div className="flex justify-end">
-            <TaskActionsDropdown   onEdit={ () => setSelectedTask(task.id)} task ={task}/>
+            <TaskActionsDropdown onEdit={() => setSelectedTask(task.id)} task={task} />
           </div>
         );
       default:

@@ -8,9 +8,11 @@ import { Icon } from "@iconify/react";
 import { Task, ViewOptions } from "../types/task";
 import { useTaskStore } from "../store/task-store";
 import { motion } from "framer-motion";
-import { formatDistanceToNow } from "../utils/date-utils";
 import { TaskDetailModal } from "./task-detail-modal";
 import { TaskActionsDropdown } from "./task-actions-dropdown";
+import { PriorityChip } from "./priority-chip";
+import { statusConfig } from "./status-chip";
+import { DueDateChip } from "./due-date";
 
 interface TaskListItemProps {
   task: Task;
@@ -26,25 +28,6 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
     ? members.find((member) => member.id === task.assignedTo)
     : null;
 
-  // Format due date
-  const formattedDueDate = task.dueDate ? formatDistanceToNow(new Date(task.dueDate)) : null;
-
-  // Determine if task is overdue
-  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date();
-
-  // Priority colors
-  const priorityColors = {
-    low: "success",
-    medium: "warning",
-    high: "danger",
-  };
-
-  // Status colors and icons
-  const statusConfig = {
-    todo: { color: "default", icon: "lucide:list-todo" },
-    "in-progress": { color: "primary", icon: "lucide:loader" },
-    done: { color: "success", icon: "lucide:check" },
-  };
 
   return (
     <>
@@ -81,14 +64,7 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
 
                 {viewOptions.showPriority && (
                   <Tooltip content={`Priority: ${task.priority}`}>
-                    <Chip
-                      size="sm"
-                      color={priorityColors[task.priority] as any}
-                      variant="dot"
-                      className="text-xs"
-                    >
-                      {task.priority}
-                    </Chip>
+                    <PriorityChip priority={task.priority} />
                   </Tooltip>
                 )}
               </div>
@@ -96,16 +72,8 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
           </div>
 
           <div className="flex items-center gap-3">
-            {viewOptions.showDueDate && formattedDueDate && (
-              <Chip
-                size="sm"
-                variant="flat"
-                color={isOverdue ? "danger" : "default"}
-                startContent={<Icon icon="lucide:clock" className="text-xs" />}
-                className="text-xs"
-              >
-                {formattedDueDate}
-              </Chip>
+            {viewOptions.showDueDate && task.dueDate && (
+              <DueDateChip dueDate={task.dueDate} />
             )}
 
             {viewOptions.showAssignee && assignedMember && (
