@@ -11,7 +11,7 @@ import { TagsChip } from "./tag-chips";
 
 interface TaskCardProps {
   task: Task;
-  overlay?: boolean
+  overlay?: boolean;
 }
 
 export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => {
@@ -32,15 +32,15 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
 
   return (
     <>
-
       <Card
         ref={setNodeRef}
         {...attributes}
         {...listeners}
         onPress={() => setIsDetailOpen(true)}
-        className={cn("cursor-grab shadow-sm transition-all hover:shadow-md bg-default-100 opacity-100",
-          isDragging && 'opacity-70 cursor-grabbing',
-          overlay && 'bg-default-200 rotate-2'
+        className={cn(
+          "cursor-grab bg-default-100 opacity-100 shadow-sm transition-all hover:shadow-md",
+          isDragging && "cursor-grabbing opacity-70",
+          overlay && "rotate-2 bg-default-200"
         )}
         style={style}
       >
@@ -49,9 +49,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
             <h3 className="text-sm font-medium">{task.title}</h3>
           </div>
 
-          {viewOptions.showTags &&
-            <TagsChip tags={task.tags} />
-          }
+          {viewOptions.showTags && <TagsChip tags={task.tags} />}
 
           <div className="mt-2 flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -73,7 +71,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
           </div>
         </CardBody>
       </Card>
-
 
       <TaskDetailModal isOpen={isDetailOpen} onClose={() => setIsDetailOpen(false)} task={task} />
     </>

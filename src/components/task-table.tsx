@@ -34,7 +34,7 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
       case "status":
         return <StatusChip status={task.status} />;
       case "tags":
-        return <TagsChip tags={task.tags} />
+        return <TagsChip tags={task.tags} />;
       case "assignedTo":
         const assignedMember = task.assignedTo
           ? members.find((member) => member.id === task.assignedTo)

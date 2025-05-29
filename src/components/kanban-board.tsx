@@ -32,18 +32,19 @@ function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
     id,
     data: { type: "column", tasks: tasks.map((task) => task.id) },
   });
-  const config = statusConfig[id]
+  const config = statusConfig[id];
 
   const isOverThisColumn = over
     ? (id === over.id && active?.data.current?.type !== "column") ||
-    tasks.map((task) => task.id).includes(over.id as string)
+      tasks.map((task) => task.id).includes(over.id as string)
     : false;
 
   return (
     <Card
       ref={setNodeRef}
-      className={cn('border-2 border-transparent transition-all',
-        isOverThisColumn && "border-primary-200 "
+      className={cn(
+        "border-2 border-transparent transition-all",
+        isOverThisColumn && "border-primary-200"
       )}
     >
       <CardHeader className="flex items-center justify-between px-4 py-3">
@@ -54,9 +55,12 @@ function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
         </div>
       </CardHeader>
       <Divider />
-      <CardBody className="min-h-[210px] max-h-[450px] overflow-auto block flex-grow space-y-4 "
-        style={{ overflowY: 'auto' }}
-      >{children}</CardBody>
+      <CardBody
+        className="block max-h-[450px] min-h-[210px] flex-grow space-y-4 overflow-auto"
+        style={{ overflowY: "auto" }}
+      >
+        {children}
+      </CardBody>
     </Card>
   );
 }
@@ -241,9 +245,7 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
     if (!activeId) return null;
     const activeTask = filteredTasks.find((task) => task.id === activeId);
     if (!activeTask) return null;
-    return (
-      <TaskCard task={activeTask} overlay />
-    );
+    return <TaskCard task={activeTask} overlay />;
   };
 
   return (
@@ -261,9 +263,11 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
               {columnTasks[column].map((task) => (
                 <TaskCard key={task.id} task={task} />
               ))}
-              {columnTasks[column].length === 0 && <div className='text-xl border-2 border-dashed border-divider size-full rounded-md m-auto flex items-center justify-center text-center'>
-                Drag it here
-              </div>}
+              {columnTasks[column].length === 0 && (
+                <div className="m-auto flex size-full items-center justify-center rounded-md border-2 border-dashed border-divider text-center text-xl">
+                  Drag it here
+                </div>
+              )}
             </SortableContext>
           </KanbanColumn>
         ))}

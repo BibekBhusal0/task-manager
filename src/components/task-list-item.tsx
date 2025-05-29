@@ -48,9 +48,7 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
               <h3 className="font-medium">{task.title}</h3>
 
               <div className="mt-1 flex flex-wrap items-center gap-2">
-                {viewOptions.showTags &&
-                  <TagsChip tags={task.tags} />
-                }
+                {viewOptions.showTags && <TagsChip tags={task.tags} />}
 
                 {viewOptions.showPriority && (
                   <Tooltip content={`Priority: ${task.priority}`}>
