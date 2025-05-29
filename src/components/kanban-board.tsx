@@ -12,9 +12,10 @@ import {
 import { SortableContext, useSortable, arrayMove } from "@dnd-kit/sortable";
 import { useTaskStore } from "../store/task-store";
 import { Task, TaskStatus } from "../types/task";
-import { cn } from "@heroui/react";
+import { Card, CardBody, CardHeader, cn, Divider } from "@heroui/react";
 import { statusConfig } from "./status-chip";
 import { TaskCard } from "./task-card";
+import { Icon } from "@iconify/react";
 
 interface KanbanBoardProps {
   filteredTasks: Task[];
@@ -31,28 +32,35 @@ function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
     id,
     data: { type: "column", tasks: tasks.map((task) => task.id) },
   });
-  const title = statusConfig[id].title;
+  const config = statusConfig[id]
 
   const isOverThisColumn = over
     ? (id === over.id && active?.data.current?.type !== "column") ||
-      tasks.map((task) => task.id).includes(over.id as string)
+    tasks.map((task) => task.id).includes(over.id as string)
     : false;
 
   return (
-    <div
+    <Card
       ref={setNodeRef}
-      className={cn(
-        "mx-2 flex w-80 flex-shrink-0 flex-col rounded-lg p-4 shadow-md",
-        isOverThisColumn ? "bg-default-200" : "bg-default-100"
+      className={cn('border-2 border-transparent transition-all',
+        isOverThisColumn && "border-primary-200 "
       )}
     >
-      <h2 className="mb-4 text-xl font-semibold text-default-800">{title}</h2>
-      <div className="min-h-[50px] flex-grow">{children}</div>
-    </div>
+      <CardHeader className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-2">
+          <Icon icon={config.icon} className={cn(`text-${config.color}`)} />
+          <span className="font-medium">{config.title}</span>
+          <span className="text-sm text-default-400">{tasks.length}</span>
+        </div>
+      </CardHeader>
+      <Divider />
+      <CardBody className="min-h-[210px] max-h-[450px] overflow-auto block flex-grow space-y-4 "
+        style={{ overflowY: 'auto' }}
+      >{children}</CardBody>
+    </Card>
   );
 }
 
-// --- Main Kanban Board Component ---
 export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
   const changeStatus = useTaskStore((state) => state.changeStatus);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
@@ -234,9 +242,7 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
     const activeTask = filteredTasks.find((task) => task.id === activeId);
     if (!activeTask) return null;
     return (
-      <div className="rotate-2 transition-transform duration-100 ease-in-out">
-        <TaskCard task={activeTask} />
-      </div>
+      <TaskCard task={activeTask} overlay />
     );
   };
 
@@ -248,18 +254,21 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <div className="flex min-h-[calc(100vh-32px)] p-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {columns.map((column) => (
           <KanbanColumn key={column} id={column} tasks={columnTasks[column]}>
             <SortableContext items={columnTasks[column].map((task) => task.id)}>
               {columnTasks[column].map((task) => (
                 <TaskCard key={task.id} task={task} />
               ))}
+              {columnTasks[column].length === 0 && <div className='text-xl border-2 border-dashed border-divider size-full rounded-md m-auto flex items-center justify-center text-center'>
+                Drag it here
+              </div>}
             </SortableContext>
           </KanbanColumn>
         ))}
       </div>
-      <DragOverlay adjustScale={false}>{renderDragOverlayContent()}</DragOverlay>,
+      <DragOverlay adjustScale={false}>{renderDragOverlayContent()}</DragOverlay>
     </DndContext>
   );
 }

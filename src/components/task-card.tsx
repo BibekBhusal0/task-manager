@@ -1,9 +1,8 @@
 import React from "react";
-import { Card, CardBody, Chip, Tooltip, Avatar } from "@heroui/react";
+import { Card, CardBody, Chip, Tooltip, Avatar, cn } from "@heroui/react";
 import { CSS } from "@dnd-kit/utilities";
 import { Task } from "../types/task";
 import { useTaskStore } from "../store/task-store";
-import { motion } from "framer-motion";
 import { TaskDetailModal } from "./task-detail-modal";
 import { PriorityChip } from "./priority-chip";
 import { DueDateChip } from "./due-date";
@@ -11,9 +10,10 @@ import { useSortable } from "@dnd-kit/sortable";
 
 interface TaskCardProps {
   task: Task;
+  overlay?: boolean
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => {
   const viewOptions = useTaskStore().viewOptions;
   const { members } = useTaskStore();
   const [isDetailOpen, setIsDetailOpen] = React.useState(false);
@@ -24,67 +24,61 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
-    opacity: isDragging ? 0.7 : 1,
-    cursor: isDragging ? "grabbing" : "grab",
   };
-
-  // Find assigned member
   const assignedMember = task.assignedTo
     ? members.find((member) => member.id === task.assignedTo)
     : null;
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ duration: 0.2 }}
+
+      <Card
+        ref={setNodeRef}
+        {...attributes}
+        {...listeners}
+        onPress={() => setIsDetailOpen(true)}
+        className={cn("cursor-grab shadow-sm transition-all hover:shadow-md bg-default-100 opacity-100",
+          isDragging && 'opacity-70 cursor-grabbing',
+          overlay && 'bg-default-200 rotate-2'
+        )}
+        style={style}
       >
-        <Card
-          ref={setNodeRef}
-          {...attributes}
-          {...listeners}
-          onPress={() => setIsDetailOpen(true)}
-          className="cursor-grab shadow-sm transition-shadow hover:shadow-md active:cursor-grabbing"
-          style={style}
-        >
-          <CardBody className="gap-2 p-3">
-            <div className="flex items-start justify-between">
-              <h3 className="text-sm font-medium">{task.title}</h3>
+        <CardBody className="gap-2 p-2">
+          <div className="flex items-start justify-between">
+            <h3 className="text-sm font-medium">{task.title}</h3>
+          </div>
+
+          {viewOptions.showTags && task.tags.length > 0 && (
+            <div className="mt-1 flex flex-wrap gap-1">
+              {task.tags.map((tag) => (
+                <Chip key={tag} size="sm" variant="flat" className="text-xs">
+                  #{tag}
+                </Chip>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-2 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {viewOptions.showPriority && <PriorityChip priority={task.priority} />}
+
+              {viewOptions.showAssignee && assignedMember && (
+                <Tooltip isDisabled={overlay} content={assignedMember.name}>
+                  <Avatar
+                    src={assignedMember.avatar}
+                    name={assignedMember.name}
+                    size="sm"
+                    className="h-6 w-6"
+                  />
+                </Tooltip>
+              )}
             </div>
 
-            {viewOptions.showTags && task.tags.length > 0 && (
-              <div className="mt-1 flex flex-wrap gap-1">
-                {task.tags.map((tag) => (
-                  <Chip key={tag} size="sm" variant="flat" className="text-xs">
-                    #{tag}
-                  </Chip>
-                ))}
-              </div>
-            )}
+            {viewOptions.showDueDate && task.dueDate && <DueDateChip dueDate={task.dueDate} />}
+          </div>
+        </CardBody>
+      </Card>
 
-            <div className="mt-2 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                {viewOptions.showPriority && <PriorityChip priority={task.priority} />}
-
-                {viewOptions.showAssignee && assignedMember && (
-                  <Tooltip content={assignedMember.name}>
-                    <Avatar
-                      src={assignedMember.avatar}
-                      name={assignedMember.name}
-                      size="sm"
-                      className="h-6 w-6"
-                    />
-                  </Tooltip>
-                )}
-              </div>
-
-              {viewOptions.showDueDate && task.dueDate && <DueDateChip dueDate={task.dueDate} />}
-            </div>
-          </CardBody>
-        </Card>
-      </motion.div>
 
       <TaskDetailModal isOpen={isDetailOpen} onClose={() => setIsDetailOpen(false)} task={task} />
     </>
