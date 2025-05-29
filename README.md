@@ -1,8 +1,44 @@
-# React + Tailwind
+# 🧩 Task Manager 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules. One top of the standard Vite setup, [tailwindcss](https://tailwindcss.com/) is installed and ready to be used in React components.
+A clean, minimal, and responsive team task manager UI built using HeroUI. Features a kanban-style board with "To Do", "In Progress", and "Done" views, along with tag filtering, user assignment, due date sorting, and priority indicators.
 
-Additional references:
+## 🚀 Features
 
-- [Getting started with Vite](https://vitejs.dev/guide/)
-- [Tailwind documentation](https://tailwindcss.com/docs/installation)
+* 🧱 Kanban-style board UI with Drag and drop
+* 🔍 Filter and sort tasks
+* 👥 User assignment with avatar display
+* 🌓 Light/Dark theme support
+* ⚡ Smooth animations with Framer Motion
+* 🧠 Global state using Zustand
+* 🎨 Built using HeroUI and Lucide Icons (via Iconify)
+
+## 📸 Screenshots
+screenshot will be here 
+
+## 🔧 Technologies Used
+
+* [HeroUI](https://www.heroui.com/)
+* [Framer Motion](https://www.framer.com/motion/)
+* [Zustand](https://github.com/pmndrs/zustand)
+* [Vite](https://vitejs.dev/)
+* [Dnd-kit](https://dndkit.com/) 
+* [Iconify + Lucide Icons](https://icon-sets.iconify.design/lucide/)
+
+## 🧪 Running Locally
+
+Clone the repo and run the development server:
+
+```bash
+git clone https://github.com/bibekbhusal0/task-manager
+cd task-manager
+npm install
+npm run dev
+```
+
+## 🧩 HeroUI Hackathon
+
+This project was built as a submission to the HeroUI Hackathon under.
+
+## 📜 License
+
+MIT
