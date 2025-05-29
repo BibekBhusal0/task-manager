@@ -53,7 +53,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
 
           <div className="mt-2 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              {viewOptions.showPriority && <PriorityChip priority={task.priority} />}
+              {viewOptions.showPriority && <PriorityChip disableTooltip = {overlay} priority={task.priority} />}
 
               {viewOptions.showAssignee && assignedMember && (
                 <Tooltip isDisabled={overlay} content={assignedMember.name}>

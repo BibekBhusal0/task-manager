@@ -4,6 +4,7 @@ import { TaskPriority } from "../types/task";
 
 interface PriorityChipProps {
   priority: TaskPriority;
+  disableTooltip?: boolean
 }
 
 const priorityColors = {
@@ -12,9 +13,9 @@ const priorityColors = {
   high: "danger",
 };
 
-export const PriorityChip: React.FC<PriorityChipProps> = ({ priority }) => {
+export const PriorityChip: React.FC<PriorityChipProps> = ({ priority, disableTooltip = false }) => {
   return (
-    <Tooltip content={`Priority: ${priority}`}>
+    <Tooltip content={`Priority: ${priority}`} isDisabled={disableTooltip}>
       <Chip size="sm" color={priorityColors[priority] as any} variant="dot">
         {priority}
       </Chip>
