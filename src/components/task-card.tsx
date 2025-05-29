@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardBody, Tooltip, Avatar, cn } from "@heroui/react";
+import { Card,Tooltip, Avatar, cn } from "@heroui/react";
 import { CSS } from "@dnd-kit/utilities";
 import { Task } from "../types/task";
 import { useTaskStore } from "../store/task-store";
@@ -36,15 +36,14 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
         ref={setNodeRef}
         {...attributes}
         {...listeners}
-        onPress={() => setIsDetailOpen(true)}
         className={cn(
-          "cursor-grab bg-default-100 opacity-100 shadow-sm transition-all hover:shadow-md",
-          isDragging && "cursor-grabbing opacity-70",
-          overlay && "rotate-2 bg-default-200"
+          "cursor-pointer bg-default-100 opacity-100 shadow-sm transition-all hover:shadow-md",
+          isDragging && "opacity-70",
+          overlay && "rotate-2 bg-default-200 cursor-grabbing"
         )}
         style={style}
       >
-        <CardBody className="gap-2 p-2">
+        <div className="gap-2 p-2" onClick={() => setIsDetailOpen(true)}>
           <div className="flex items-start justify-between">
             <h3 className="text-sm font-medium">{task.title}</h3>
           </div>
@@ -53,7 +52,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
 
           <div className="mt-2 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              {viewOptions.showPriority && <PriorityChip disableTooltip = {overlay} priority={task.priority} />}
+              {viewOptions.showPriority && <PriorityChip disableTooltip={overlay} priority={task.priority} />}
 
               {viewOptions.showAssignee && assignedMember && (
                 <Tooltip isDisabled={overlay} content={assignedMember.name}>
@@ -69,7 +68,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
 
             {viewOptions.showDueDate && task.dueDate && <DueDateChip dueDate={task.dueDate} />}
           </div>
-        </CardBody>
+        </div>
       </Card>
 
       <TaskDetailModal isOpen={isDetailOpen} onClose={() => setIsDetailOpen(false)} task={task} />

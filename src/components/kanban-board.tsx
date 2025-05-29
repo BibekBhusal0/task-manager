@@ -8,6 +8,7 @@ import {
   KeyboardSensor,
   UniqueIdentifier,
   DragOverlay,
+  PointerActivationConstraint,
 } from "@dnd-kit/core";
 import { SortableContext, useSortable, arrayMove } from "@dnd-kit/sortable";
 import { useTaskStore } from "../store/task-store";
@@ -58,9 +59,9 @@ function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
         {children}
       </CardBody>
       <Divider />
-      <CardFooter className = 'flex cursor-pointer items-center justify-center text-lg text-default-300' onClick={() => setIsAddTaskOpen(true)}>
+      <CardFooter className='flex cursor-pointer items-center justify-center text-lg text-default-300' onClick={() => setIsAddTaskOpen(true)}>
         <div className="flex gap-2 items-center ">
-        <Icon icon = "lucide:plus"/>
+          <Icon icon="lucide:plus" />
           <div >Add task</div>
         </div>
       </CardFooter>
@@ -155,13 +156,12 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
     [columnTasks]
   );
 
+  const activationConstraint: PointerActivationConstraint = {
+    distance: 10, delay: 400
+  };
   const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: { delay: 100, tolerance: 5 },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: { delay: 100, tolerance: 5 },
-    }),
+    useSensor(MouseSensor, { activationConstraint: activationConstraint }),
+    useSensor(TouchSensor, { activationConstraint: activationConstraint }),
     useSensor(KeyboardSensor)
   );
 
