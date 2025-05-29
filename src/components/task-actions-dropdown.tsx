@@ -1,8 +1,9 @@
 import React from "react";
 import { useTaskStore } from "../store/task-store";
-import { Task } from "../types/task";
+import { Task, TaskStatus } from "../types/task";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import { statusConfig } from "./status-chip";
 
 interface TaskActionsDropdownProps {
   task: Task;
@@ -10,7 +11,7 @@ interface TaskActionsDropdownProps {
 }
 
 export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = ({ onEdit, task }) => {
-  const { deleteTask, changeStatus } = useTaskStore();
+  const { deleteTask, changeStatus, } = useTaskStore();
 
   const handleDelete = () => {
     deleteTask(task.id);
@@ -31,27 +32,15 @@ export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = ({ onEdit
         >
           Edit
         </DropdownItem>
-        <DropdownItem
-          key="todo"
-          startContent={<Icon icon="lucide:list-todo" className="text-sm" />}
-          onPress={() => changeStatus(task.id, "todo")}
-        >
-          Move to To Do
-        </DropdownItem>
-        <DropdownItem
-          key="in-progress"
-          startContent={<Icon icon="lucide:loader" className="text-sm" />}
-          onPress={() => changeStatus(task.id, "in-progress")}
-        >
-          Move to In Progress
-        </DropdownItem>
-        <DropdownItem
-          key="done"
-          startContent={<Icon icon="lucide:check" className="text-sm" />}
-          onPress={() => changeStatus(task.id, "done")}
-        >
-          Move to Done
-        </DropdownItem>
+        <>{Object.entries(statusConfig).map(([status, config]) => (
+          <>{status !== task.status && <DropdownItem
+            key={status}
+            startContent={<Icon icon={config.icon} className="text-sm" />}
+            onPress={() => changeStatus(task.id, status as TaskStatus)}
+          >
+            Move to {config.title}
+          </DropdownItem> }</>
+        ))}</>
         <DropdownItem
           key="delete"
           color="danger"
@@ -64,3 +53,4 @@ export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = ({ onEdit
     </Dropdown>
   );
 };
+
