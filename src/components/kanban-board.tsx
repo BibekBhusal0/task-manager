@@ -120,13 +120,13 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
   // Find which column a given task ID belongs to
   const findColumnForTask = useCallback(
     (id: UniqueIdentifier): TaskStatus | undefined => {
-      if (columns.some((col) => col === id)) {
-        return id as TaskStatus;
+      if (columns.some((col) => col === id)) return id as TaskStatus;
+      for (const columnId in columnTasks) {
+        if (columnTasks[columnId as TaskStatus].some((task) => task.id === id)) { return columnId as TaskStatus; }
       }
-      const task = filteredTasks.find((task) => task.id === id);
-      return task?.status;
+      return undefined;
     },
-    [filteredTasks]
+    [columnTasks]
   );
 
   const sensors = useSensors(
@@ -149,6 +149,52 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
     const overColumnId = findColumnForTask(overId);
 
     if (!activeColumnId || !overColumnId) return;
+    if (activeColumnId !== overColumnId) {
+      // Moving task to a different column
+        const activeTask = columnTasks[activeColumnId].find(
+          (task) => task.id === active.id
+        );
+        if (!activeTask) return 
+
+      changeStatus(activeTask.id ,overColumnId)
+      setColumnTasks((prevBoardState) => {
+        const newBoardState = { ...prevBoardState };
+
+        const activeColumnTasks = newBoardState[activeColumnId];
+        const overColumnTasks = newBoardState[overColumnId];
+
+        const activeTask = activeColumnTasks.find(
+          (task) => task.id === active.id
+        );
+        if (!activeTask) return prevBoardState; // Should not happen
+
+        // Remove from active column
+        newBoardState[activeColumnId] = activeColumnTasks.filter(
+          (task) => task.id !== active.id
+        );
+
+        // Determine new index in the over column
+        let newIndex: number;
+        if (columns.some((col) => col === overId)) {
+          // If dragging over the column header/empty space
+          newIndex = overColumnTasks.length; // Add to end
+        } else {
+          // If dragging over another task
+          const overIndex = overColumnTasks.findIndex(
+            (task) => task.id === overId
+          );
+          newIndex = overIndex !== -1 ? overIndex : overColumnTasks.length;
+        }
+        // Insert into over column
+        newBoardState[overColumnId] = [
+          ...overColumnTasks.slice(0, newIndex),
+          activeTask,
+          ...overColumnTasks.slice(newIndex),
+        ];
+        return newBoardState;
+      });
+
+    }
   };
 
   const handleDragEnd = ({ active, over }: { active: any; over: any }) => {
@@ -178,40 +224,6 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
           });
         }
       }
-    } else {
-      // Moving task to a different column
-      const activeTask = filteredTasks.find(task => task.id === active.id);
-      if (!activeTask) return;
-
-      setColumnTasks(prevColumnTasks => {
-        const newColumnTasks = { ...prevColumnTasks };
-
-        // Remove from active column
-        newColumnTasks[activeColumnId] = newColumnTasks[activeColumnId].filter(task => task.id !== active.id);
-
-        // Find the index to insert in the over column
-        let newIndex: number;
-        if (columns.some((col) => col === overId)) {
-          // If dragging over the column header/empty space
-          newIndex = newColumnTasks[overColumnId].length;
-        } else {
-          // If dragging over another task
-          const overIndex = newColumnTasks[overColumnId].findIndex(
-            (task) => task.id === overId
-          );
-          newIndex = overIndex !== -1 ? overIndex : newColumnTasks[overColumnId].length;
-        }
-
-        // Insert into over column
-        newColumnTasks[overColumnId] = [
-          ...newColumnTasks[overColumnId].slice(0, newIndex),
-          activeTask,
-          ...newColumnTasks[overColumnId].slice(newIndex),
-        ];
-
-        return newColumnTasks;
-      });
-      changeStatus(active.id, overColumnId);
     }
   };
 
@@ -223,9 +235,8 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
     if (!activeTask) return null;
     return (
       <div
-        className="rotate-2 transition-transform bg-default-200 duration-100 ease-in-out"
+        className="rotate-2 transition-transform duration-100 ease-in-out"
       >
-        {/* {activeTask.title} */}
         <TaskCard task = { activeTask } />
       </div>
     );
