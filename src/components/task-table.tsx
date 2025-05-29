@@ -6,7 +6,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Chip,
   Avatar,
 } from "@heroui/react";
 import { useTaskStore } from "../store/task-store";
@@ -16,6 +15,7 @@ import { TaskActionsDropdown } from "./task-actions-dropdown";
 import { StatusChip } from "./status-chip";
 import { PriorityChip } from "./priority-chip";
 import { DueDateChip } from "./due-date";
+import { TagsChip } from "./tag-chips";
 
 interface TaskTableProps {
   filteredTasks: Task[];
@@ -34,15 +34,7 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
       case "status":
         return <StatusChip status={task.status} />;
       case "tags":
-        return (
-          <div className="flex flex-wrap gap-1">
-            {task.tags.map((tag: string) => (
-              <Chip key={tag} size="sm" variant="flat" className="text-xs">
-                #{tag}
-              </Chip>
-            ))}
-          </div>
-        );
+        return <TagsChip tags={task.tags} />
       case "assignedTo":
         const assignedMember = task.assignedTo
           ? members.find((member) => member.id === task.assignedTo)

@@ -1,5 +1,5 @@
 import React from "react";
-import { Chip, Tooltip, Avatar } from "@heroui/react";
+import { Tooltip, Avatar } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { Task, ViewOptions } from "../types/task";
 import { useTaskStore } from "../store/task-store";
@@ -9,6 +9,7 @@ import { TaskActionsDropdown } from "./task-actions-dropdown";
 import { PriorityChip } from "./priority-chip";
 import { statusConfig } from "./status-chip";
 import { DueDateChip } from "./due-date";
+import { TagsChip } from "./tag-chips";
 
 interface TaskListItemProps {
   task: Task;
@@ -47,15 +48,9 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
               <h3 className="font-medium">{task.title}</h3>
 
               <div className="mt-1 flex flex-wrap items-center gap-2">
-                {viewOptions.showTags && task.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {task.tags.map((tag) => (
-                      <Chip key={tag} size="sm" variant="flat" className="text-xs">
-                        #{tag}
-                      </Chip>
-                    ))}
-                  </div>
-                )}
+                {viewOptions.showTags &&
+                  <TagsChip tags={task.tags} />
+                }
 
                 {viewOptions.showPriority && (
                   <Tooltip content={`Priority: ${task.priority}`}>

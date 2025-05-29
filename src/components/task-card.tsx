@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardBody, Chip, Tooltip, Avatar, cn } from "@heroui/react";
+import { Card, CardBody, Tooltip, Avatar, cn } from "@heroui/react";
 import { CSS } from "@dnd-kit/utilities";
 import { Task } from "../types/task";
 import { useTaskStore } from "../store/task-store";
@@ -7,6 +7,7 @@ import { TaskDetailModal } from "./task-detail-modal";
 import { PriorityChip } from "./priority-chip";
 import { DueDateChip } from "./due-date";
 import { useSortable } from "@dnd-kit/sortable";
+import { TagsChip } from "./tag-chips";
 
 interface TaskCardProps {
   task: Task;
@@ -48,15 +49,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
             <h3 className="text-sm font-medium">{task.title}</h3>
           </div>
 
-          {viewOptions.showTags && task.tags.length > 0 && (
-            <div className="mt-1 flex flex-wrap gap-1">
-              {task.tags.map((tag) => (
-                <Chip key={tag} size="sm" variant="flat" className="text-xs">
-                  #{tag}
-                </Chip>
-              ))}
-            </div>
-          )}
+          {viewOptions.showTags &&
+            <TagsChip tags={task.tags} />
+          }
 
           <div className="mt-2 flex items-center justify-between">
             <div className="flex items-center gap-2">
