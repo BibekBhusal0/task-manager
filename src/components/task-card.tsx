@@ -6,34 +6,38 @@ import {
   Tooltip,
   Avatar,
 } from "@heroui/react";
-import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { Task } from "../types/task";
 import { useTaskStore } from "../store/task-store";
 import { motion } from "framer-motion";
 import { TaskDetailModal } from "./task-detail-modal";
-import { TaskActionsDropdown } from "./task-actions-dropdown";
 import { PriorityChip } from "./priority-chip";
 import { DueDateChip } from "./due-date";
+import { useSortable } from "@dnd-kit/sortable";
 
 interface TaskCardProps {
   task: Task;
-  viewOptions: any;
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({ task, viewOptions }) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ task, }) => {
+  const viewOptions = useTaskStore().viewOptions
   const { members, } = useTaskStore();
   const [isDetailOpen, setIsDetailOpen] = React.useState(false);
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: task.id,
-  });
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: task.id });
 
-  const style = transform
-    ? {
-      transform: CSS.Translate.toString(transform),
-      zIndex: 10,
-    }
-    : undefined;
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+    opacity: isDragging ? 0.7 : 1,
+    cursor: isDragging ? 'grabbing' : 'grab',
+  };
 
   // Find assigned member
   const assignedMember = task.assignedTo
@@ -52,7 +56,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, viewOptions }) => {
           ref={setNodeRef}
           {...attributes}
           {...listeners}
-          isPressable
           onPress={() => setIsDetailOpen(true)}
           className="cursor-grab shadow-sm transition-shadow hover:shadow-md active:cursor-grabbing"
           style={style}
@@ -60,10 +63,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, viewOptions }) => {
           <CardBody className="gap-2 p-3">
             <div className="flex items-start justify-between">
               <h3 className="text-sm font-medium">{task.title}</h3>
-              <TaskActionsDropdown
-                task={task}
-                onEdit={() => setIsDetailOpen(true)}
-              />
+              
             </div>
 
             {viewOptions.showTags && task.tags.length > 0 && (
