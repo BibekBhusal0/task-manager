@@ -1,5 +1,5 @@
 import React from "react";
-import { Tabs, Tab, Button, Tooltip } from "@heroui/react";
+import { Tabs, Tab, Tooltip } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTaskStore } from "../store/task-store";
@@ -11,7 +11,6 @@ import { ViewOptions } from "./view-options";
 
 export const TaskDashboard: React.FC = () => {
   const { tasks, viewType, setViewType, filter } = useTaskStore();
-  const [isViewOptionsOpen, setIsViewOptionsOpen] = React.useState(false);
 
   const filteredTasks = React.useMemo(() => {
     let filtered = tasks.filter((task) => {
@@ -58,9 +57,9 @@ export const TaskDashboard: React.FC = () => {
   }, [tasks, filter]);
 
   const viewOptions = [
-    { key: "kanban", icon: "lucide:layout-grid", label: "Kanban" , component : KanbanBoard },
-    { key: "list", icon: "lucide:list", label: "List" , component : TaskList},
-    { key: "table", icon: "lucide:table", label: "Table" , component : TaskTable},
+    { key: "kanban", icon: "lucide:layout-grid", label: "Kanban", component: KanbanBoard },
+    { key: "list", icon: "lucide:list", label: "List", component: TaskList },
+    { key: "table", icon: "lucide:table", label: "Table", component: TaskTable },
   ];
 
   const SelectedComponent = viewOptions.find((option) => option.key === viewType)?.component || KanbanBoard;
@@ -92,14 +91,7 @@ export const TaskDashboard: React.FC = () => {
               ))}
             </Tabs>
             <Tooltip content="View options">
-              <Button
-                isIconOnly
-                variant="flat"
-                size="sm"
-                onPress={() => setIsViewOptionsOpen(true)}
-              >
-                <Icon icon="lucide:sliders-horizontal" className="text-sm" />
-              </Button>
+              <ViewOptions />
             </Tooltip>
           </div>
         </div>
@@ -119,7 +111,6 @@ export const TaskDashboard: React.FC = () => {
         </motion.div>
       </AnimatePresence>
 
-      <ViewOptions isOpen={isViewOptionsOpen} onClose={() => setIsViewOptionsOpen(false)} />
     </div>
   );
 };
