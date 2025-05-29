@@ -11,10 +11,13 @@ import {
   Select,
   SelectItem,
   Chip,
+  cn,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
 import { TaskPriority, TaskStatus } from "../types/task";
+import { statusConfig } from "./status-chip";
+import { priorityColors } from "./priority-chip";
 
 interface AddTaskModalProps {
   isOpen: boolean;
@@ -97,18 +100,6 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
     setErrors({}); // Clear errors when the modal opens
   }, [isOpen]);
 
-  const statusOptions = [
-    { key: "todo", label: "To Do", icon: "lucide:list-todo" },
-    { key: "in-progress", label: "In Progress", icon: "lucide:loader" },
-    { key: "done", label: "Done", icon: "lucide:check" },
-  ];
-
-  const priorityOptions = [
-    { key: "low", label: "Low", color: "success" },
-    { key: "medium", label: "Medium", color: "warning" },
-    { key: "high", label: "High", color: "danger" },
-  ];
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} placement="center" scrollBehavior="inside">
       <ModalContent>
@@ -146,9 +137,9 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                     setFormState({ ...formState, status: e.target.value as TaskStatus })
                   }
                 >
-                  {statusOptions.map((option) => (
-                    <SelectItem key={option.key} startContent={<Icon icon={option.icon} />}>
-                      {option.label}
+                  {Object.entries(statusConfig).map(([status, option]) => (
+                    <SelectItem key={status} startContent={<Icon icon={option.icon} />}>
+                      {option.title}
                     </SelectItem>
                   ))}
                 </Select>
@@ -233,12 +224,13 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                     setFormState({ ...formState, priority: e.target.value as TaskPriority })
                   }
                 >
-                  {priorityOptions.map((option) => (
+                  {Object.entries(priorityColors).map(([priority, color]) => (
                     <SelectItem
-                      key={option.key}
-                      startContent={<div className={`h-2 w-2 rounded-full bg-${option.color}`} />}
+                      key={priority}
+                      startContent={<div className={cn(`h-2 w-2 rounded-full bg-${color}`)} />}
+                      className='capitalize'
                     >
-                      {option.label}
+                      {priority}
                     </SelectItem>
                   ))}
                 </Select>

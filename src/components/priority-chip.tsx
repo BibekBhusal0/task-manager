@@ -7,7 +7,7 @@ interface PriorityChipProps {
   disableTooltip?: boolean
 }
 
-const priorityColors = {
+export const priorityColors = {
   low: "success",
   medium: "warning",
   high: "danger",
