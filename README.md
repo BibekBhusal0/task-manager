@@ -1,6 +1,6 @@
 # 🧩 Task Manager 
 
-A clean, minimal, and responsive team task manager UI built using HeroUI. Features a kanban-style board with "To Do", "In Progress", and "Done" views, along with tag filtering, user assignment, due date sorting, and priority indicators.
+A clean, minimal, and responsive team task manager UI built using HeroUI. Features a Kanban board, List and Table, along with tag filtering, user assignment, due date sorting, and priority indicators.
 
 ## 🚀 Features
 
