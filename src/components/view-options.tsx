@@ -45,31 +45,31 @@ export const ViewOptions: React.FC<ViewOptionsProps> = ({ isOpen, onClose }) => 
       onClose={onClose}
       placement="center"
       size="sm"
-    // motionProps={
-    //   animationsEnabled
-    //     ? {
-    //         variants: {
-    //           enter: {
-    //             y: 0,
-    //             opacity: 1,
-    //             transition: {
-    //               duration: 0.3,
-    //               ease: [0.16, 1, 0.3, 1],
-    //             },
-    //           },
-    //           exit: {
-    //             y: 20,
-    //             opacity: 0,
-    //             transition: {
-    //               duration: 0.2,
-    //               ease: [0.16, 1, 0.3, 1],
-    //             },
-    //           },
-    //         },
-    //         initial: { y: 20, opacity: 0 },
-    //       }
-    //     : undefined
-    // }
+      // motionProps={
+      //   animationsEnabled
+      //     ? {
+      //         variants: {
+      //           enter: {
+      //             y: 0,
+      //             opacity: 1,
+      //             transition: {
+      //               duration: 0.3,
+      //               ease: [0.16, 1, 0.3, 1],
+      //             },
+      //           },
+      //           exit: {
+      //             y: 20,
+      //             opacity: 0,
+      //             transition: {
+      //               duration: 0.2,
+      //               ease: [0.16, 1, 0.3, 1],
+      //             },
+      //           },
+      //         },
+      //         initial: { y: 20, opacity: 0 },
+      //       }
+      //     : undefined
+      // }
     >
       <ModalContent>
         {(onClose) => (

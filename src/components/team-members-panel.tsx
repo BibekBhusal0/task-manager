@@ -26,12 +26,7 @@ export const TeamMembersPanel: React.FC<TeamMembersPanelProps> = ({ isOpen, onCl
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      placement="center"
-      size="sm"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} placement="center" size="sm">
       <ModalContent>
         {(onClose) => (
           <>

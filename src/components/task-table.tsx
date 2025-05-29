@@ -22,7 +22,7 @@ interface TaskTableProps {
 }
 
 export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
-  const { viewOptions, members, } = useTaskStore();
+  const { viewOptions, members } = useTaskStore();
   const [selectedTask, setSelectedTask] = React.useState<string | null>(null);
 
   const renderCell = (task: any, columnKey: string) => {
@@ -32,9 +32,7 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
       case "title":
         return <div className="font-medium">{task.title}</div>;
       case "status":
-        return (
-          <StatusChip status={task.status} />
-        );
+        return <StatusChip status={task.status} />;
       case "tags":
         return (
           <div className="flex flex-wrap gap-1">
@@ -63,11 +61,9 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
           <span className="text-sm text-default-400">Unassigned</span>
         );
       case "dueDate":
-        return <DueDateChip dueDate={task.dueDate} />
+        return <DueDateChip dueDate={task.dueDate} />;
       case "priority":
-        return (
-          <PriorityChip priority={task.priority} />
-        );
+        return <PriorityChip priority={task.priority} />;
       case "actions":
         return (
           <div className="flex justify-end">
@@ -95,10 +91,7 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
 
   return (
     <>
-      <Table
-        aria-label="Tasks table"
-        onRowAction={(key: string) => setSelectedTask(key)}
-      >
+      <Table aria-label="Tasks table" onRowAction={(key: string) => setSelectedTask(key)}>
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn key={column.key} className={column.key === "actions" ? "text-right" : ""}>
@@ -125,4 +118,3 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
     </>
   );
 };
-

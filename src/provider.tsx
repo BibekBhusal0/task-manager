@@ -1,14 +1,12 @@
 import { HeroUIProvider, ToastProvider } from "@heroui/react";
 import { ReactNode } from "react";
 
-
-type ProviderProps = { children?: ReactNode }
+type ProviderProps = { children?: ReactNode };
 export function Provider({ children }: ProviderProps) {
-
   return (
-    <HeroUIProvider >
+    <HeroUIProvider>
       <ToastProvider />
       {children}
     </HeroUIProvider>
-  )
-};
+  );
+}

@@ -13,8 +13,8 @@ export default function App() {
   const { selectedMember, clearSelectedMember } = useTaskStore();
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark')
-  }
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
   const navButtons = [
     {
@@ -60,14 +60,9 @@ export default function App() {
               </Button>
             </div>
           )}
-          {navButtons.map((button , i) => (
+          {navButtons.map((button, i) => (
             <Tooltip key={i} content={button.content}>
-              <Button
-                isIconOnly
-                variant="flat"
-                onPress={button.onPress}
-                className = 'text-lg'
-              >
+              <Button isIconOnly variant="flat" onPress={button.onPress} className="text-lg">
                 <Icon icon={button.icon} />
               </Button>
             </Tooltip>
@@ -84,4 +79,3 @@ export default function App() {
     </div>
   );
 }
-

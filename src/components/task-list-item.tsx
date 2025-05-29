@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  Chip,
-  Tooltip,
-  Avatar,
-} from "@heroui/react";
+import { Chip, Tooltip, Avatar } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { Task, ViewOptions } from "../types/task";
 import { useTaskStore } from "../store/task-store";
@@ -20,14 +16,13 @@ interface TaskListItemProps {
 }
 
 export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions }) => {
-  const { members, } = useTaskStore();
+  const { members } = useTaskStore();
   const [isDetailOpen, setIsDetailOpen] = React.useState(false);
 
   // Find assigned member
   const assignedMember = task.assignedTo
     ? members.find((member) => member.id === task.assignedTo)
     : null;
-
 
   return (
     <>
@@ -72,9 +67,7 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
           </div>
 
           <div className="flex items-center gap-3">
-            {viewOptions.showDueDate && task.dueDate && (
-              <DueDateChip dueDate={task.dueDate} />
-            )}
+            {viewOptions.showDueDate && task.dueDate && <DueDateChip dueDate={task.dueDate} />}
 
             {viewOptions.showAssignee && assignedMember && (
               <Tooltip content={assignedMember.name}>
@@ -87,10 +80,7 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
               </Tooltip>
             )}
 
-            <TaskActionsDropdown
-              task={task}
-              onEdit={() => setIsDetailOpen(true)}
-            />
+            <TaskActionsDropdown task={task} onEdit={() => setIsDetailOpen(true)} />
           </div>
         </div>
       </motion.div>
@@ -99,4 +89,3 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
     </>
   );
 };
-

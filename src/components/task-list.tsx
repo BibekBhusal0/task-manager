@@ -15,8 +15,7 @@ export const TaskList: React.FC<TaskListProps> = ({ filteredTasks }) => {
   return (
     <Card>
       <CardBody className="p-0">
-        <div
-        >
+        <div>
           <AnimatePresence>
             {filteredTasks.map((task, index) => (
               <React.Fragment key={task.id}>
@@ -34,4 +33,3 @@ export const TaskList: React.FC<TaskListProps> = ({ filteredTasks }) => {
     </Card>
   );
 };
-

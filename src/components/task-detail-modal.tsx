@@ -107,12 +107,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
   ];
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      placement="center"
-      scrollBehavior="inside"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} placement="center" scrollBehavior="inside">
       <ModalContent>
         {(onClose) => (
           <>
@@ -144,10 +139,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                   onChange={(e) => setStatus(e.target.value as TaskStatus)}
                 >
                   {statusOptions.map((option) => (
-                    <SelectItem
-                      key={option.key}
-                      startContent={<Icon icon={option.icon} />}
-                    >
+                    <SelectItem key={option.key} startContent={<Icon icon={option.icon} />}>
                       {option.label}
                     </SelectItem>
                   ))}

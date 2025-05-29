@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Card,
-  CardBody,
-  Chip,
-  Tooltip,
-  Avatar,
-} from "@heroui/react";
+import { Card, CardBody, Chip, Tooltip, Avatar } from "@heroui/react";
 import { CSS } from "@dnd-kit/utilities";
 import { Task } from "../types/task";
 import { useTaskStore } from "../store/task-store";
@@ -19,24 +13,19 @@ interface TaskCardProps {
   task: Task;
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({ task, }) => {
-  const viewOptions = useTaskStore().viewOptions
-  const { members, } = useTaskStore();
+export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
+  const viewOptions = useTaskStore().viewOptions;
+  const { members } = useTaskStore();
   const [isDetailOpen, setIsDetailOpen] = React.useState(false);
-  const {
-    setNodeRef,
-    attributes,
-    listeners,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: task.id });
+  const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
+    id: task.id,
+  });
 
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
     opacity: isDragging ? 0.7 : 1,
-    cursor: isDragging ? 'grabbing' : 'grab',
+    cursor: isDragging ? "grabbing" : "grab",
   };
 
   // Find assigned member
@@ -63,7 +52,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, }) => {
           <CardBody className="gap-2 p-3">
             <div className="flex items-start justify-between">
               <h3 className="text-sm font-medium">{task.title}</h3>
-              
             </div>
 
             {viewOptions.showTags && task.tags.length > 0 && (
@@ -78,9 +66,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, }) => {
 
             <div className="mt-2 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                {viewOptions.showPriority && (
-                  <PriorityChip priority={task.priority} />
-                )}
+                {viewOptions.showPriority && <PriorityChip priority={task.priority} />}
 
                 {viewOptions.showAssignee && assignedMember && (
                   <Tooltip content={assignedMember.name}>
@@ -94,9 +80,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, }) => {
                 )}
               </div>
 
-              {viewOptions.showDueDate && task.dueDate && (
-                <DueDateChip dueDate={task.dueDate} />
-              )}
+              {viewOptions.showDueDate && task.dueDate && <DueDateChip dueDate={task.dueDate} />}
             </div>
           </CardBody>
         </Card>
@@ -106,4 +90,3 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, }) => {
     </>
   );
 };
-

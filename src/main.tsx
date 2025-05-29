@@ -7,8 +7,10 @@ import { Provider } from "./provider.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <Provider><main className="bg-background text-foreground">
-      <App />
-    </main></Provider>
+    <Provider>
+      <main className="bg-background text-foreground">
+        <App />
+      </main>
+    </Provider>
   </React.StrictMode>
 );

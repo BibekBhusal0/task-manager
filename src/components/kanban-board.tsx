@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from "react";
 import {
   DndContext,
   useSensor,
@@ -8,17 +8,13 @@ import {
   KeyboardSensor,
   UniqueIdentifier,
   DragOverlay,
-} from '@dnd-kit/core';
-import {
-  SortableContext,
-  useSortable,
-  arrayMove,
-} from '@dnd-kit/sortable';
-import { useTaskStore } from '../store/task-store';
-import { Task, TaskStatus } from '../types/task';
-import { cn } from '@heroui/react';
-import { statusConfig } from './status-chip';
-import { TaskCard } from './task-card';
+} from "@dnd-kit/core";
+import { SortableContext, useSortable, arrayMove } from "@dnd-kit/sortable";
+import { useTaskStore } from "../store/task-store";
+import { Task, TaskStatus } from "../types/task";
+import { cn } from "@heroui/react";
+import { statusConfig } from "./status-chip";
+import { TaskCard } from "./task-card";
 
 interface KanbanBoardProps {
   filteredTasks: Task[];
@@ -31,24 +27,27 @@ interface KanbanColumnProps {
 }
 
 function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
-  const { setNodeRef, over, active } = useSortable({ id, data: { type: 'column', tasks: tasks.map((task) => task.id) } });
-  const title = statusConfig[id].title
+  const { setNodeRef, over, active } = useSortable({
+    id,
+    data: { type: "column", tasks: tasks.map((task) => task.id) },
+  });
+  const title = statusConfig[id].title;
 
   const isOverThisColumn = over
-    ? (id === over.id && active?.data.current?.type !== 'column') ||
-    tasks.map((task) => task.id).includes(over.id as string)
+    ? (id === over.id && active?.data.current?.type !== "column") ||
+      tasks.map((task) => task.id).includes(over.id as string)
     : false;
 
   return (
     <div
       ref={setNodeRef}
       className={cn(
-        "flex flex-col flex-shrink-0 w-80 p-4 mx-2 rounded-lg shadow-md",
-        isOverThisColumn ? 'bg-default-200' : 'bg-default-100'
+        "mx-2 flex w-80 flex-shrink-0 flex-col rounded-lg p-4 shadow-md",
+        isOverThisColumn ? "bg-default-200" : "bg-default-100"
       )}
     >
-      <h2 className="text-xl font-semibold mb-4 text-default-800">{title}</h2>
-      <div className="flex-grow min-h-[50px]">{children}</div>
+      <h2 className="mb-4 text-xl font-semibold text-default-800">{title}</h2>
+      <div className="min-h-[50px] flex-grow">{children}</div>
     </div>
   );
 }
@@ -60,26 +59,26 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
 
   const [columnTasks, setColumnTasks] = useState<{ [key in TaskStatus]: Task[] }>({
     todo: [],
-    'in-progress': [],
+    "in-progress": [],
     done: [],
   });
 
   useEffect(() => {
     const newColumnTasks = {
-      todo: filteredTasks.filter((task) => task.status === 'todo'),
-      'in-progress': filteredTasks.filter((task) => task.status === 'in-progress'),
-      done: filteredTasks.filter((task) => task.status === 'done'),
+      todo: filteredTasks.filter((task) => task.status === "todo"),
+      "in-progress": filteredTasks.filter((task) => task.status === "in-progress"),
+      done: filteredTasks.filter((task) => task.status === "done"),
     };
 
-    console.count('running effect')
-    const columnIds: TaskStatus[] = ['todo', 'in-progress', 'done'];
+    console.count("running effect");
+    const columnIds: TaskStatus[] = ["todo", "in-progress", "done"];
     const sortTasksById = (tasks: Task[]) => tasks.slice().sort((a, b) => a.id.localeCompare(b.id));
 
     let isIdDifferent = false;
     for (const columnId of columnIds) {
       if (
-        JSON.stringify(sortTasksById(newColumnTasks[columnId]).map(task => task.id)) !==
-        JSON.stringify(sortTasksById(columnTasks[columnId]).map(task => task.id))
+        JSON.stringify(sortTasksById(newColumnTasks[columnId]).map((task) => task.id)) !==
+        JSON.stringify(sortTasksById(columnTasks[columnId]).map((task) => task.id))
       ) {
         isIdDifferent = true;
         break;
@@ -94,7 +93,9 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
       let isContentDifferent = false;
       for (const columnId of columnIds) {
         if (
-          newColumnTasks[columnId].some((task, index) => JSON.stringify(task) !== JSON.stringify(columnTasks[columnId][index]))
+          newColumnTasks[columnId].some(
+            (task, index) => JSON.stringify(task) !== JSON.stringify(columnTasks[columnId][index])
+          )
         ) {
           isContentDifferent = true;
           break;
@@ -103,11 +104,17 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
 
       if (isContentDifferent) {
         // If content is different, update the content while preserving the existing order
-        setColumnTasks(prevColumnTasks => {
+        setColumnTasks((prevColumnTasks) => {
           const updatedColumnTasks = {
-            todo: prevColumnTasks.todo.map((task) => newColumnTasks.todo.find(t => t.id === task.id) || task),
-            'in-progress': prevColumnTasks['in-progress'].map((task) => newColumnTasks['in-progress'].find(t => t.id === task.id) || task),
-            done: prevColumnTasks.done.map((task) => newColumnTasks.done.find(t => t.id === task.id) || task),
+            todo: prevColumnTasks.todo.map(
+              (task) => newColumnTasks.todo.find((t) => t.id === task.id) || task
+            ),
+            "in-progress": prevColumnTasks["in-progress"].map(
+              (task) => newColumnTasks["in-progress"].find((t) => t.id === task.id) || task
+            ),
+            done: prevColumnTasks.done.map(
+              (task) => newColumnTasks.done.find((t) => t.id === task.id) || task
+            ),
           };
           return updatedColumnTasks;
         });
@@ -115,14 +122,16 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
     }
   }, [filteredTasks]);
 
-  const columns = Object.entries(statusConfig).map(([key,]) => (key as TaskStatus))
+  const columns = Object.entries(statusConfig).map(([key]) => key as TaskStatus);
 
   // Find which column a given task ID belongs to
   const findColumnForTask = useCallback(
     (id: UniqueIdentifier): TaskStatus | undefined => {
       if (columns.some((col) => col === id)) return id as TaskStatus;
       for (const columnId in columnTasks) {
-        if (columnTasks[columnId as TaskStatus].some((task) => task.id === id)) { return columnId as TaskStatus; }
+        if (columnTasks[columnId as TaskStatus].some((task) => task.id === id)) {
+          return columnId as TaskStatus;
+        }
       }
       return undefined;
     },
@@ -151,27 +160,21 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
     if (!activeColumnId || !overColumnId) return;
     if (activeColumnId !== overColumnId) {
       // Moving task to a different column
-        const activeTask = columnTasks[activeColumnId].find(
-          (task) => task.id === active.id
-        );
-        if (!activeTask) return 
+      const activeTask = columnTasks[activeColumnId].find((task) => task.id === active.id);
+      if (!activeTask) return;
 
-      changeStatus(activeTask.id ,overColumnId)
+      changeStatus(activeTask.id, overColumnId);
       setColumnTasks((prevBoardState) => {
         const newBoardState = { ...prevBoardState };
 
         const activeColumnTasks = newBoardState[activeColumnId];
         const overColumnTasks = newBoardState[overColumnId];
 
-        const activeTask = activeColumnTasks.find(
-          (task) => task.id === active.id
-        );
+        const activeTask = activeColumnTasks.find((task) => task.id === active.id);
         if (!activeTask) return prevBoardState; // Should not happen
 
         // Remove from active column
-        newBoardState[activeColumnId] = activeColumnTasks.filter(
-          (task) => task.id !== active.id
-        );
+        newBoardState[activeColumnId] = activeColumnTasks.filter((task) => task.id !== active.id);
 
         // Determine new index in the over column
         let newIndex: number;
@@ -180,9 +183,7 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
           newIndex = overColumnTasks.length; // Add to end
         } else {
           // If dragging over another task
-          const overIndex = overColumnTasks.findIndex(
-            (task) => task.id === overId
-          );
+          const overIndex = overColumnTasks.findIndex((task) => task.id === overId);
           newIndex = overIndex !== -1 ? overIndex : overColumnTasks.length;
         }
         // Insert into over column
@@ -193,7 +194,6 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
         ];
         return newBoardState;
       });
-
     }
   };
 
@@ -213,11 +213,11 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
       // Reordering within the same column
       if (active.id !== overId) {
         const activeColumnTasks = columnTasks[activeColumnId];
-        const oldIndex = activeColumnTasks.findIndex(task => task.id === active.id);
-        const newIndex = activeColumnTasks.findIndex(task => task.id === overId);
+        const oldIndex = activeColumnTasks.findIndex((task) => task.id === active.id);
+        const newIndex = activeColumnTasks.findIndex((task) => task.id === overId);
 
         if (oldIndex !== -1 && newIndex !== -1) {
-          setColumnTasks(prevColumnTasks => {
+          setColumnTasks((prevColumnTasks) => {
             const updatedColumnTasks = { ...prevColumnTasks };
             updatedColumnTasks[activeColumnId] = arrayMove(activeColumnTasks, oldIndex, newIndex);
             return updatedColumnTasks;
@@ -231,17 +231,14 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
 
   const renderDragOverlayContent = () => {
     if (!activeId) return null;
-    const activeTask = filteredTasks.find(task => task.id === activeId);
+    const activeTask = filteredTasks.find((task) => task.id === activeId);
     if (!activeTask) return null;
     return (
-      <div
-        className="rotate-2 transition-transform duration-100 ease-in-out"
-      >
-        <TaskCard task = { activeTask } />
+      <div className="rotate-2 transition-transform duration-100 ease-in-out">
+        <TaskCard task={activeTask} />
       </div>
     );
   };
-
 
   return (
     <DndContext
@@ -251,21 +248,12 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <div className="flex p-4 min-h-[calc(100vh-32px)]">
+      <div className="flex min-h-[calc(100vh-32px)] p-4">
         {columns.map((column) => (
-          <KanbanColumn
-            key={column}
-            id={column}
-            tasks={columnTasks[column]}
-          >
-            <SortableContext
-              items={columnTasks[column].map((task) => task.id)}
-            >
+          <KanbanColumn key={column} id={column} tasks={columnTasks[column]}>
+            <SortableContext items={columnTasks[column].map((task) => task.id)}>
               {columnTasks[column].map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                />
+                <TaskCard key={task.id} task={task} />
               ))}
             </SortableContext>
           </KanbanColumn>
@@ -275,4 +263,3 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
     </DndContext>
   );
 }
-

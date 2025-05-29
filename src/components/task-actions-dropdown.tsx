@@ -1,24 +1,15 @@
 import React from "react";
 import { useTaskStore } from "../store/task-store";
 import { Task } from "../types/task";
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Button,
-} from "@heroui/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
 import { Icon } from "@iconify/react";
 
 interface TaskActionsDropdownProps {
-  task: Task,
+  task: Task;
   onEdit: () => void;
 }
 
-export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = ({
-  onEdit,
-  task
-}) => {
+export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = ({ onEdit, task }) => {
   const { deleteTask, changeStatus } = useTaskStore();
 
   const handleDelete = () => {
