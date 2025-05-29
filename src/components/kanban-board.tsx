@@ -56,8 +56,7 @@ function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
       </CardHeader>
       <Divider />
       <CardBody
-        className="block max-h-[450px] min-h-[210px] flex-grow space-y-4 overflow-auto"
-        style={{ overflowY: "auto" }}
+        className="block max-h-[450px] min-h-[210px] flex-grow  space-y-4 overflow-y-auto"
       >
         {children}
       </CardBody>

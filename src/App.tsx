@@ -32,6 +32,11 @@ export default function App() {
       icon: theme === "dark" ? "lucide:sun" : "lucide:moon",
       onPress: toggleTheme,
     },
+    {
+      content: "Open GitHub",
+      icon: "lucide:github",
+      onPress: () =>window.open("https://github.com/bibekbhusal0/task-manager", "_blank")
+    },
   ];
 
   return (
@@ -79,3 +84,4 @@ export default function App() {
     </div>
   );
 }
+
