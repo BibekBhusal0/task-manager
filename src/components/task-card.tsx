@@ -1,5 +1,5 @@
 import React from "react";
-import { Card,Tooltip, Avatar, cn } from "@heroui/react";
+import { Card, Tooltip, Avatar, cn } from "@heroui/react";
 import { CSS } from "@dnd-kit/utilities";
 import { Task } from "../types/task";
 import { useTaskStore } from "../store/task-store";
@@ -39,7 +39,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
         className={cn(
           "cursor-pointer bg-default-100 opacity-100 shadow-sm transition-all hover:shadow-md",
           isDragging && "opacity-70",
-          overlay && "rotate-2 bg-default-200 cursor-grabbing"
+          overlay && "rotate-2 cursor-grabbing bg-default-200"
         )}
         style={style}
       >
@@ -52,7 +52,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
 
           <div className="mt-2 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              {viewOptions.showPriority && <PriorityChip disableTooltip={overlay} priority={task.priority} />}
+              {viewOptions.showPriority && (
+                <PriorityChip disableTooltip={overlay} priority={task.priority} />
+              )}
 
               {viewOptions.showAssignee && assignedMember && (
                 <Tooltip isDisabled={overlay} content={assignedMember.name}>

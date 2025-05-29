@@ -4,7 +4,7 @@ import { TaskPriority } from "../types/task";
 
 interface PriorityChipProps {
   priority: TaskPriority;
-  disableTooltip?: boolean
+  disableTooltip?: boolean;
 }
 
 export const priorityColors = {

@@ -62,7 +62,8 @@ export const TaskDashboard: React.FC = () => {
     { key: "table", icon: "lucide:table", label: "Table", component: TaskTable },
   ];
 
-  const SelectedComponent = viewOptions.find((option) => option.key === viewType)?.component || KanbanBoard;
+  const SelectedComponent =
+    viewOptions.find((option) => option.key === viewType)?.component || KanbanBoard;
 
   return (
     <div className="flex flex-col gap-6">
@@ -78,7 +79,7 @@ export const TaskDashboard: React.FC = () => {
               size="sm"
               items={viewOptions}
             >
-              {((option) => (
+              {(option) => (
                 <Tab
                   key={option.key}
                   title={
@@ -88,7 +89,7 @@ export const TaskDashboard: React.FC = () => {
                     </div>
                   }
                 />
-              ))}
+              )}
             </Tabs>
             <Tooltip content="View options">
               <ViewOptions />
@@ -110,8 +111,6 @@ export const TaskDashboard: React.FC = () => {
           <SelectedComponent filteredTasks={filteredTasks} />
         </motion.div>
       </AnimatePresence>
-
     </div>
   );
 };
-

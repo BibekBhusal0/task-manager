@@ -36,37 +36,45 @@ function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
 
   const isOverThisColumn = over
     ? (id === over.id && active?.data.current?.type !== "column") ||
-    tasks.map((task) => task.id).includes(over.id as string)
+      tasks.map((task) => task.id).includes(over.id as string)
     : false;
 
   return (
-    <><Card
-      ref={setNodeRef}
-      className={cn(
-        "border-2 border-transparent transition-all",
-        isOverThisColumn && "border-primary-200"
-      )}
-    >
-      <CardHeader className="flex items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-2">
-          <Icon icon={config.icon} className={cn(`text-${config.color}`)} />
-          <span className="font-medium">{config.title}</span>
-          <span className="text-sm text-default-400">{tasks.length}</span>
-        </div>
-      </CardHeader>
-      <Divider />
-      <CardBody className="block max-h-[450px] min-h-[210px] flex-grow  space-y-4 overflow-y-auto">
-        {children}
-      </CardBody>
-      <Divider />
-      <CardFooter className='flex cursor-pointer items-center justify-center text-lg text-default-300' onClick={() => setIsAddTaskOpen(true)}>
-        <div className="flex gap-2 items-center ">
-          <Icon icon="lucide:plus" />
-          <div >Add task</div>
-        </div>
-      </CardFooter>
-    </Card>
-      <AddTaskModal isOpen={isAddTaskOpen} onClose={() => setIsAddTaskOpen(false)} initialState={{ status: id }} />
+    <>
+      <Card
+        ref={setNodeRef}
+        className={cn(
+          "border-2 border-transparent transition-all",
+          isOverThisColumn && "border-primary-200"
+        )}
+      >
+        <CardHeader className="flex items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-2">
+            <Icon icon={config.icon} className={cn(`text-${config.color}`)} />
+            <span className="font-medium">{config.title}</span>
+            <span className="text-sm text-default-400">{tasks.length}</span>
+          </div>
+        </CardHeader>
+        <Divider />
+        <CardBody className="block max-h-[450px] min-h-[210px] flex-grow space-y-4 overflow-y-auto">
+          {children}
+        </CardBody>
+        <Divider />
+        <CardFooter
+          className="flex cursor-pointer items-center justify-center text-lg text-default-300"
+          onClick={() => setIsAddTaskOpen(true)}
+        >
+          <div className="flex items-center gap-2">
+            <Icon icon="lucide:plus" />
+            <div>Add task</div>
+          </div>
+        </CardFooter>
+      </Card>
+      <AddTaskModal
+        isOpen={isAddTaskOpen}
+        onClose={() => setIsAddTaskOpen(false)}
+        initialState={{ status: id }}
+      />
     </>
   );
 }
@@ -157,7 +165,8 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
   );
 
   const activationConstraint: PointerActivationConstraint = {
-    distance: 10, delay: 400
+    distance: 10,
+    delay: 400,
   };
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: activationConstraint }),

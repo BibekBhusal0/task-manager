@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Button,
-} from "@heroui/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
 import { useTaskStore } from "../store/task-store";
 import { Icon } from "@iconify/react";
 
@@ -25,11 +19,7 @@ export const ViewOptions: React.FC = () => {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button
-          isIconOnly
-          variant="flat"
-          size="sm"
-        >
+        <Button isIconOnly variant="flat" size="sm">
           <Icon icon="lucide:sliders-horizontal" className="text-sm" />
         </Button>
       </DropdownTrigger>
@@ -37,7 +27,7 @@ export const ViewOptions: React.FC = () => {
         aria-label="View options"
         selectionMode="multiple"
         selectedKeys={new Set(selectedKeys)}
-        closeOnSelect = {false}
+        closeOnSelect={false}
         onSelectionChange={(keys: Set<string>) => {
           const newOptions = { ...viewOptions };
           for (const key in viewOptions) {
@@ -54,4 +44,3 @@ export const ViewOptions: React.FC = () => {
     </Dropdown>
   );
 };
-

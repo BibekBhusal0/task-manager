@@ -11,7 +11,7 @@ interface TaskActionsDropdownProps {
 }
 
 export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = ({ onEdit, task }) => {
-  const { deleteTask, changeStatus, } = useTaskStore();
+  const { deleteTask, changeStatus } = useTaskStore();
 
   const handleDelete = () => {
     deleteTask(task.id);
@@ -32,15 +32,21 @@ export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = ({ onEdit
         >
           Edit
         </DropdownItem>
-        <>{Object.entries(statusConfig).map(([status, config]) => (
-          <>{status !== task.status && <DropdownItem
-            key={status}
-            startContent={<Icon icon={config.icon} className="text-sm" />}
-            onPress={() => changeStatus(task.id, status as TaskStatus)}
-          >
-            Move to {config.title}
-          </DropdownItem> }</>
-        ))}</>
+        <>
+          {Object.entries(statusConfig).map(([status, config]) => (
+            <>
+              {status !== task.status && (
+                <DropdownItem
+                  key={status}
+                  startContent={<Icon icon={config.icon} className="text-sm" />}
+                  onPress={() => changeStatus(task.id, status as TaskStatus)}
+                >
+                  Move to {config.title}
+                </DropdownItem>
+              )}
+            </>
+          ))}
+        </>
         <DropdownItem
           key="delete"
           color="danger"
@@ -53,4 +59,3 @@ export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = ({ onEdit
     </Dropdown>
   );
 };
-

@@ -35,7 +35,7 @@ export default function App() {
     {
       content: "Open GitHub",
       icon: "lucide:github",
-      onPress: () =>window.open("https://github.com/bibekbhusal0/task-manager", "_blank")
+      onPress: () => window.open("https://github.com/bibekbhusal0/task-manager", "_blank"),
     },
   ];
 
@@ -84,4 +84,3 @@ export default function App() {
     </div>
   );
 }
-

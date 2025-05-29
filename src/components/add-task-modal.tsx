@@ -22,7 +22,7 @@ import { priorityColors } from "./priority-chip";
 interface AddTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialState?: Partial<FormState>
+  initialState?: Partial<FormState>;
 }
 
 interface FormState {
@@ -50,7 +50,10 @@ const initialFormState: FormState = {
 export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, initialState }) => {
   const { members, addTask } = useTaskStore();
 
-  const [formState, setFormState] = React.useState<FormState>({ ...initialFormState, ...initialState, });
+  const [formState, setFormState] = React.useState<FormState>({
+    ...initialFormState,
+    ...initialState,
+  });
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
   const handleAddTag = () => {
@@ -97,7 +100,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, ini
   };
 
   React.useEffect(() => {
-    if (!isOpen) setFormState({ ...initialFormState, ...initialState, });
+    if (!isOpen) setFormState({ ...initialFormState, ...initialState });
     setErrors({});
   }, [isOpen]);
 
@@ -181,9 +184,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, ini
                   placeholder="Select due date"
                   name="dueDate"
                   value={formState.dueDate}
-                  onChange={(e) =>
-                    setFormState({ ...formState, dueDate: e.target.value })
-                  }
+                  onChange={(e) => setFormState({ ...formState, dueDate: e.target.value })}
                 />
 
                 <Select
@@ -191,9 +192,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, ini
                   placeholder="Select team member"
                   name="assignedTo"
                   selectedKeys={formState.assignedTo ? [formState.assignedTo] : []}
-                  onChange={(e) =>
-                    setFormState({ ...formState, assignedTo: e.target.value })
-                  }
+                  onChange={(e) => setFormState({ ...formState, assignedTo: e.target.value })}
                 >
                   {members.map((member) => (
                     <SelectItem
@@ -229,7 +228,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, ini
                     <SelectItem
                       key={priority}
                       startContent={<div className={cn(`h-2 w-2 rounded-full bg-${color}`)} />}
-                      className='capitalize'
+                      className="capitalize"
                     >
                       {priority}
                     </SelectItem>
@@ -251,4 +250,3 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, ini
     </Modal>
   );
 };
-
