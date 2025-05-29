@@ -21,49 +21,55 @@ interface AddTaskModalProps {
   onClose: () => void;
 }
 
+interface FormState {
+  title: string;
+  description: string;
+  status: TaskStatus;
+  tags: string[];
+  dueDate: string;
+  assignedTo: string;
+  priority: TaskPriority;
+  newTag: string;
+}
+
+const initialFormState: FormState = {
+  title: "",
+  description: "",
+  status: "todo",
+  tags: [],
+  dueDate: "",
+  assignedTo: "",
+  priority: "medium",
+  newTag: "",
+};
+
 export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) => {
   const { members, addTask } = useTaskStore();
 
-  const [title, setTitle] = React.useState("");
-  const [description, setDescription] = React.useState("");
-  const [status, setStatus] = React.useState<TaskStatus>("todo");
-  const [tags, setTags] = React.useState<string[]>([]);
-  const [dueDate, setDueDate] = React.useState("");
-  const [assignedTo, setAssignedTo] = React.useState<string>("");
-  const [priority, setPriority] = React.useState<TaskPriority>("medium");
-  const [newTag, setNewTag] = React.useState("");
+  const [formState, setFormState] = React.useState<FormState>(initialFormState);
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
-  // Reset form on close
-  React.useEffect(() => {
-    if (!isOpen) {
-      setTitle("");
-      setDescription("");
-      setStatus("todo");
-      setTags([]);
-      setDueDate("");
-      setAssignedTo("");
-      setPriority("medium");
-      setNewTag("");
-      setErrors({});
-    }
-  }, [isOpen]);
-
   const handleAddTag = () => {
-    if (newTag.trim() && !tags.includes(newTag.trim())) {
-      setTags([...tags, newTag.trim()]);
-      setNewTag("");
+    if (formState.newTag.trim() && !formState.tags.includes(formState.newTag.trim())) {
+      setFormState({
+        ...formState,
+        tags: [...formState.tags, formState.newTag.trim()],
+        newTag: "",
+      });
     }
   };
 
   const handleRemoveTag = (tag: string) => {
-    setTags(tags.filter((t) => t !== tag));
+    setFormState({
+      ...formState,
+      tags: formState.tags.filter((t) => t !== tag),
+    });
   };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!title.trim()) {
+    if (!formState.title.trim()) {
       newErrors.title = "Title is required";
     }
 
@@ -75,20 +81,21 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
     if (!validateForm()) return;
 
     const newTask = {
+      ...formState,
       id: `task-${Date.now()}`,
-      title,
-      description,
-      status,
-      tags,
-      dueDate: dueDate ? new Date(dueDate).toISOString() : null,
-      assignedTo: assignedTo || null,
-      priority,
+      dueDate: formState.dueDate ? new Date(formState.dueDate).toISOString() : null,
+      assignedTo: formState.assignedTo || null,
       createdAt: new Date().toISOString(),
     };
 
     addTask(newTask);
     onClose();
   };
+
+  React.useEffect(() => {
+    if (!isOpen) setFormState(initialFormState);
+    setErrors({}); // Clear errors when the modal opens
+  }, [isOpen]);
 
   const statusOptions = [
     { key: "todo", label: "To Do", icon: "lucide:list-todo" },
@@ -113,8 +120,9 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                 <Input
                   label="Title"
                   placeholder="Enter task title"
-                  value={title}
-                  onValueChange={setTitle}
+                  name="title"
+                  value={formState.title}
+                  onValueChange={(value) => setFormState({ ...formState, title: value })}
                   isRequired
                   isInvalid={!!errors.title}
                   errorMessage={errors.title}
@@ -123,16 +131,20 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                 <Textarea
                   label="Description"
                   placeholder="Enter task description"
-                  value={description}
-                  onValueChange={setDescription}
+                  name="description"
+                  value={formState.description}
+                  onValueChange={(value) => setFormState({ ...formState, description: value })}
                   minRows={3}
                 />
 
                 <Select
                   label="Status"
                   placeholder="Select status"
-                  selectedKeys={[status]}
-                  onChange={(e) => setStatus(e.target.value as TaskStatus)}
+                  name="status"
+                  selectedKeys={[formState.status]}
+                  onChange={(e) =>
+                    setFormState({ ...formState, status: e.target.value as TaskStatus })
+                  }
                 >
                   {statusOptions.map((option) => (
                     <SelectItem key={option.key} startContent={<Icon icon={option.icon} />}>
@@ -144,20 +156,21 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                 <div>
                   <p className="mb-1 text-sm">Tags</p>
                   <div className="mb-2 flex flex-wrap gap-2">
-                    {tags.map((tag) => (
+                    {formState.tags.map((tag) => (
                       <Chip key={tag} onClose={() => handleRemoveTag(tag)} variant="flat">
                         #{tag}
                       </Chip>
                     ))}
-                    {tags.length === 0 && (
+                    {formState.tags.length === 0 && (
                       <span className="text-sm text-default-400">No tags added</span>
                     )}
                   </div>
                   <div className="flex gap-2">
                     <Input
                       placeholder="Add a tag"
-                      value={newTag}
-                      onValueChange={setNewTag}
+                      name="newTag"
+                      value={formState.newTag}
+                      onValueChange={(value) => setFormState({ ...formState, newTag: value })}
                       onKeyDown={(e: any) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
@@ -174,15 +187,21 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                   type="date"
                   label="Due Date"
                   placeholder="Select due date"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
+                  name="dueDate"
+                  value={formState.dueDate}
+                  onChange={(e) =>
+                    setFormState({ ...formState, dueDate: e.target.value })
+                  }
                 />
 
                 <Select
                   label="Assigned To"
                   placeholder="Select team member"
-                  selectedKeys={assignedTo ? [assignedTo] : []}
-                  onChange={(e) => setAssignedTo(e.target.value)}
+                  name="assignedTo"
+                  selectedKeys={formState.assignedTo ? [formState.assignedTo] : []}
+                  onChange={(e) =>
+                    setFormState({ ...formState, assignedTo: e.target.value })
+                  }
                 >
                   {members.map((member) => (
                     <SelectItem
@@ -208,8 +227,11 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
                 <Select
                   label="Priority"
                   placeholder="Select priority"
-                  selectedKeys={[priority]}
-                  onChange={(e) => setPriority(e.target.value as TaskPriority)}
+                  name="priority"
+                  selectedKeys={[formState.priority]}
+                  onChange={(e) =>
+                    setFormState({ ...formState, priority: e.target.value as TaskPriority })
+                  }
                 >
                   {priorityOptions.map((option) => (
                     <SelectItem
@@ -236,3 +258,4 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
     </Modal>
   );
 };
+
