@@ -57,6 +57,14 @@ export const TaskDashboard: React.FC = () => {
     return filtered;
   }, [tasks, filter]);
 
+  const viewOptions = [
+    { key: "kanban", icon: "lucide:layout-grid", label: "Kanban" , component : KanbanBoard },
+    { key: "list", icon: "lucide:list", label: "List" , component : TaskList},
+    { key: "table", icon: "lucide:table", label: "Table" , component : TaskTable},
+  ];
+
+  const SelectedComponent = viewOptions.find((option) => option.key === viewType)?.component || KanbanBoard;
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">
@@ -69,34 +77,19 @@ export const TaskDashboard: React.FC = () => {
               onSelectionChange={(key) => setViewType(key as any)}
               radius="full"
               size="sm"
+              items={viewOptions}
             >
-              <Tab
-                key="kanban"
-                title={
-                  <div className="flex items-center gap-1">
-                    <Icon icon="lucide:layout-grid" className="text-sm" />
-                    <span className="hidden sm:inline">Kanban</span>
-                  </div>
-                }
-              />
-              <Tab
-                key="list"
-                title={
-                  <div className="flex items-center gap-1">
-                    <Icon icon="lucide:list" className="text-sm" />
-                    <span className="hidden sm:inline">List</span>
-                  </div>
-                }
-              />
-              <Tab
-                key="table"
-                title={
-                  <div className="flex items-center gap-1">
-                    <Icon icon="lucide:table" className="text-sm" />
-                    <span className="hidden sm:inline">Table</span>
-                  </div>
-                }
-              />
+              {((option) => (
+                <Tab
+                  key={option.key}
+                  title={
+                    <div className="flex items-center gap-1">
+                      <Icon icon={option.icon} className="text-sm" />
+                      <span className="hidden sm:inline">{option.label}</span>
+                    </div>
+                  }
+                />
+              ))}
             </Tabs>
             <Tooltip content="View options">
               <Button
@@ -122,9 +115,7 @@ export const TaskDashboard: React.FC = () => {
           transition={{ duration: 0.2 }}
           className="w-full"
         >
-          {viewType === "kanban" && <KanbanBoard filteredTasks={filteredTasks} />}
-          {viewType === "list" && <TaskList filteredTasks={filteredTasks} />}
-          {viewType === "table" && <TaskTable filteredTasks={filteredTasks} />}
+          <SelectedComponent filteredTasks={filteredTasks} />
         </motion.div>
       </AnimatePresence>
 
@@ -132,3 +123,4 @@ export const TaskDashboard: React.FC = () => {
     </div>
   );
 };
+
