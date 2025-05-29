@@ -92,6 +92,7 @@ export const FilterToolbar: React.FC = () => {
             aria-label="Tag filters"
             selectionMode="multiple"
             selectedKeys={new Set(filter.tags)}
+            className = 'max-h-80 overflow-auto'
             onSelectionChange={(keys) => {
               updateFilter({ tags: Array.from(keys as Set<string>) });
             }}
