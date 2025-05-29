@@ -27,15 +27,12 @@ export const FilterToolbar: React.FC = () => {
     updateFilter({ search: value });
   };
 
+  const currentFilter = filter.sortBy + '-' +filter.sortDirection
+  // __AUTO_GENERATED_PRINT_VAR_START__
+  console.log("FilterToolbar currentFilter:", currentFilter); // __AUTO_GENERATED_PRINT_VAR_END__
 
   const handleSortChange = (key: string) => {
-    if (key === "reset") {
-      updateFilter({
-        sortBy: "createdAt",
-        sortDirection: "desc",
-      });
-      return;
-    }
+    if (key === "reset") { updateFilter({ sortBy: "createdAt", sortDirection: "desc" }); return; }
 
     const [sortBy, sortDirection] = key.split("-") as [any, any];
     updateFilter({ sortBy, sortDirection });
@@ -103,7 +100,7 @@ export const FilterToolbar: React.FC = () => {
           </DropdownMenu>
         </Dropdown>
 
-        {viewType !== 'kanban' && <Dropdown>
+        {viewType !== 'kanban' && <Dropdown >
           <DropdownTrigger>
             <Button
               variant="flat"
@@ -113,7 +110,12 @@ export const FilterToolbar: React.FC = () => {
               Sort
             </Button>
           </DropdownTrigger>
-          <DropdownMenu aria-label="Sort options" onAction={handleSortChange}>
+          <DropdownMenu
+            aria-label="Sort options"
+            selectedKeys ={ [ currentFilter ] }
+            selectionMode="single"
+            onAction={handleSortChange}
+          >
             <DropdownItem key="createdAt-desc" startContent={<Icon icon="lucide:calendar" />}>
               Newest first
             </DropdownItem>
