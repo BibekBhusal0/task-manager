@@ -33,7 +33,7 @@ export const TaskDashboard: React.FC = () => {
       return true;
     });
 
-    // Sort tasks
+    // Filter tasks
     filtered = filtered.sort((a, b) => {
       if (filter.sortBy === "createdAt") {
         return filter.sortDirection === "asc"

@@ -12,7 +12,7 @@ import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
 
 export const FilterToolbar: React.FC = () => {
-  const { filter, updateFilter, tasks } = useTaskStore();
+  const { filter, updateFilter, tasks , viewType} = useTaskStore();
 
   // Extract unique tags from all tasks
   const allTags = React.useMemo(() => {
@@ -27,13 +27,6 @@ export const FilterToolbar: React.FC = () => {
     updateFilter({ search: value });
   };
 
-  const handleTagSelect = (tag: string) => {
-    const newTags = filter.tags.includes(tag)
-      ? filter.tags.filter((t) => t !== tag)
-      : [...filter.tags, tag];
-
-    updateFilter({ tags: newTags });
-  };
 
   const handleSortChange = (key: string) => {
     if (key === "reset") {
@@ -109,7 +102,7 @@ export const FilterToolbar: React.FC = () => {
           </DropdownMenu>
         </Dropdown>
 
-        <Dropdown>
+        {viewType !== 'kanban' && <Dropdown>
           <DropdownTrigger>
             <Button
               variant="flat"
@@ -140,7 +133,7 @@ export const FilterToolbar: React.FC = () => {
               Reset sorting
             </DropdownItem>
           </DropdownMenu>
-        </Dropdown>
+        </Dropdown> }
 
         {hasActiveFilters && (
           <Button
