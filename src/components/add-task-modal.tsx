@@ -22,6 +22,7 @@ import { priorityColors } from "./priority-chip";
 interface AddTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialState?: Partial<FormState>
 }
 
 interface FormState {
@@ -46,10 +47,10 @@ const initialFormState: FormState = {
   newTag: "",
 };
 
-export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) => {
+export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, initialState }) => {
   const { members, addTask } = useTaskStore();
 
-  const [formState, setFormState] = React.useState<FormState>(initialFormState);
+  const [formState, setFormState] = React.useState<FormState>({ ...initialFormState, ...initialState, });
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
   const handleAddTag = () => {
@@ -96,8 +97,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) =
   };
 
   React.useEffect(() => {
-    if (!isOpen) setFormState(initialFormState);
-    setErrors({}); // Clear errors when the modal opens
+    if (!isOpen) setFormState({ ...initialFormState, ...initialState, });
+    setErrors({});
   }, [isOpen]);
 
   return (

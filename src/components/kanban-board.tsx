@@ -12,10 +12,11 @@ import {
 import { SortableContext, useSortable, arrayMove } from "@dnd-kit/sortable";
 import { useTaskStore } from "../store/task-store";
 import { Task, TaskStatus } from "../types/task";
-import { Card, CardBody, CardHeader, cn, Divider } from "@heroui/react";
+import { Card, CardBody, CardFooter, CardHeader, cn, Divider } from "@heroui/react";
 import { statusConfig } from "./status-chip";
 import { TaskCard } from "./task-card";
 import { Icon } from "@iconify/react";
+import { AddTaskModal } from "./add-task-modal";
 
 interface KanbanBoardProps {
   filteredTasks: Task[];
@@ -28,19 +29,17 @@ interface KanbanColumnProps {
 }
 
 function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
-  const { setNodeRef, over, active } = useSortable({
-    id,
-    data: { type: "column", tasks: tasks.map((task) => task.id) },
-  });
+  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
+  const { setNodeRef, over, active } = useSortable({ id, data: { type: "column", tasks: tasks } });
   const config = statusConfig[id];
 
   const isOverThisColumn = over
     ? (id === over.id && active?.data.current?.type !== "column") ||
-      tasks.map((task) => task.id).includes(over.id as string)
+    tasks.map((task) => task.id).includes(over.id as string)
     : false;
 
   return (
-    <Card
+    <><Card
       ref={setNodeRef}
       className={cn(
         "border-2 border-transparent transition-all",
@@ -55,12 +54,19 @@ function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
         </div>
       </CardHeader>
       <Divider />
-      <CardBody
-        className="block max-h-[450px] min-h-[210px] flex-grow  space-y-4 overflow-y-auto"
-      >
+      <CardBody className="block max-h-[450px] min-h-[210px] flex-grow  space-y-4 overflow-y-auto">
         {children}
       </CardBody>
+      <Divider />
+      <CardFooter className = 'flex cursor-pointer items-center justify-center text-lg text-default-300' onClick={() => setIsAddTaskOpen(true)}>
+        <div className="flex gap-2 items-center ">
+        <Icon icon = "lucide:plus"/>
+          <div >Add task</div>
+        </div>
+      </CardFooter>
     </Card>
+      <AddTaskModal isOpen={isAddTaskOpen} onClose={() => setIsAddTaskOpen(false)} initialState={{ status: id }} />
+    </>
   );
 }
 
@@ -258,7 +264,7 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {columns.map((column) => (
           <KanbanColumn key={column} id={column} tasks={columnTasks[column]}>
-            <SortableContext items={columnTasks[column].map((task) => task.id)}>
+            <SortableContext items={columnTasks[column]}>
               {columnTasks[column].map((task) => (
                 <TaskCard key={task.id} task={task} />
               ))}
