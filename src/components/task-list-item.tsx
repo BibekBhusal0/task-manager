@@ -38,46 +38,46 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
       >
         <div className="flex items-center justify-between">
           <ContextMenu task={task} onEdit={() => setIsDetailOpen(true)}   >
-              <div className="w-full p-4 pr-0">
-                <div className="flex flex-1 items-center gap-3">
-                  <Tooltip content={`Status: ${task.status.replace("-", " ")}`}>
-                    <div className={`text-${statusConfig[task.status].color}`}>
-                      <Icon icon={statusConfig[task.status].icon} />
-                    </div>
-                  </Tooltip>
+            <div className="w-full p-4 pr-0">
+              <div className="flex flex-1 items-center gap-3">
+                <Tooltip content={`Status: ${task.status.replace("-", " ")}`}>
+                  <div className={`text-${statusConfig[task.status].color}`}>
+                    <Icon icon={statusConfig[task.status].icon} />
+                  </div>
+                </Tooltip>
 
-                  <div>
-                    <h3 className="font-medium">{task.title}</h3>
+                <div>
+                  <h3 className="font-medium">{task.title}</h3>
 
-                    <div className="mt-1 flex flex-wrap items-center gap-2">
-                      {viewOptions.showTags && <TagsChip tags={task.tags} />}
+                  <div className="mt-1 flex flex-wrap items-center gap-2">
+                    {viewOptions.showTags && <TagsChip tags={task.tags} />}
 
-                      {viewOptions.showPriority && (
-                        <Tooltip content={`Priority: ${task.priority}`}>
-                          <PriorityChip priority={task.priority} />
-                        </Tooltip>
-                      )}
-                    </div>
+                    {viewOptions.showPriority && (
+                      <Tooltip content={`Priority: ${task.priority}`}>
+                        <PriorityChip priority={task.priority} />
+                      </Tooltip>
+                    )}
                   </div>
                 </div>
-
-                <div className="flex items-center gap-3">
-                  {viewOptions.showDueDate && task.dueDate && (
-                    <DueDateChip dueDate={task.dueDate} />
-                  )}
-
-                  {viewOptions.showAssignee && assignedMember && (
-                    <Tooltip content={assignedMember.name}>
-                      <Avatar
-                        src={assignedMember.avatar}
-                        name={assignedMember.name}
-                        size="sm"
-                        className="h-6 w-6"
-                      />
-                    </Tooltip>
-                  )}
-                </div>
               </div>
+
+              <div className="flex items-center gap-3">
+                {viewOptions.showDueDate && task.dueDate && (
+                  <DueDateChip dueDate={task.dueDate} />
+                )}
+
+                {viewOptions.showAssignee && assignedMember && (
+                  <Tooltip content={assignedMember.name}>
+                    <Avatar
+                      src={assignedMember.avatar}
+                      name={assignedMember.name}
+                      size="sm"
+                      className="h-6 w-6"
+                    />
+                  </Tooltip>
+                )}
+              </div>
+            </div>
           </ContextMenu>
 
           <div className="px-2">

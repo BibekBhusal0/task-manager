@@ -8,6 +8,7 @@ import { PriorityChip } from "./priority-chip";
 import { DueDateChip } from "./due-date";
 import { useSortable } from "@dnd-kit/sortable";
 import { TagsChip } from "./tag-chips";
+import { ContextMenu } from "./task-actions-dropdown";
 
 interface TaskCardProps {
   task: Task;
@@ -32,7 +33,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
 
   return (
     <>
-      <Card
+      <ContextMenu task={task} onEdit={() => setIsDetailOpen(true)} disabled={overlay} ><Card
         ref={setNodeRef}
         {...attributes}
         {...listeners}
@@ -71,7 +72,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
             {viewOptions.showDueDate && task.dueDate && <DueDateChip dueDate={task.dueDate} />}
           </div>
         </div>
-      </Card>
+      </Card></ContextMenu>
 
       <TaskDetailModal isOpen={isDetailOpen} onClose={() => setIsDetailOpen(false)} task={task} />
     </>

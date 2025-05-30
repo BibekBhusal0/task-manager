@@ -89,17 +89,18 @@ export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = (props) =
 };
 
 interface ContextMenuProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   onEdit: () => void;
   task: Task
+  disabled?: boolean;
 }
 
-export const ContextMenu: React.FC<ContextMenuProps> = ({ children, ...props }) => {
+export const ContextMenu: React.FC<ContextMenuProps> = ({ children, disabled = true, ...props }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [position, setPosition] = React.useState({ x: 0, y: 0 });
 
   React.useEffect(() => {
-      const handleScroll = () => {
+    const handleScroll = () => {
       if (isOpen) setIsOpen(false);
     }
     window.addEventListener("scroll", handleScroll);
@@ -109,6 +110,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ children, ...props }) 
   const handleContextMenu = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
+      if (disabled) return
       setPosition({ x: event.clientX, y: event.clientY });
       setIsOpen(true);
     },

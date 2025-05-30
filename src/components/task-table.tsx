@@ -57,11 +57,7 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
       case "priority":
         return <PriorityChip priority={task.priority} />;
       case "actions":
-        return (
-          <div className="flex justify-end">
-            <TaskActionsDropdown onEdit={() => setSelectedTask(task.id)} task={task} />
-          </div>
-        );
+        return <TaskActionsDropdown onEdit={() => setSelectedTask(task.id)} task={task} />
       default:
         return cellValue;
     }
