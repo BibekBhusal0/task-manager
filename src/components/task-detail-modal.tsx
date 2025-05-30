@@ -13,10 +13,12 @@ import {
   Chip,
   cn,
   Image,
+  DatePicker,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
 import { Task, TaskPriority, TaskStatus } from "../types/task";
+import { DateValue, getLocalTimeZone, parseDate, } from "@internationalized/date";
 
 interface TaskDetailModalProps {
   isOpen: boolean;
@@ -31,9 +33,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
   const [description, setDescription] = React.useState(task.description);
   const [status, setStatus] = React.useState<TaskStatus>(task.status);
   const [tags, setTags] = React.useState<string[]>(task.tags);
-  const [dueDate, setDueDate] = React.useState(
-    task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : ""
-
+  const [dueDate, setDueDate] = React.useState<DateValue | null>(
+    task.dueDate ? parseDate(task.dueDate.slice(0, 10)) : null
   );
   const [assignedTo, setAssignedTo] = React.useState<string>(task.assignedTo || "");
   const [priority, setPriority] = React.useState<TaskPriority>(task.priority);
@@ -46,7 +47,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
     setDescription(task.description);
     setStatus(task.status);
     setTags(task.tags);
-    setDueDate(task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : "");
+    setDueDate(task.dueDate ? parseDate(task.dueDate.slice(0, 10)) : null);
     setAssignedTo(task.assignedTo || "");
     setPriority(task.priority);
     setNewTag("");
@@ -83,7 +84,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
       description,
       status,
       tags,
-      dueDate: dueDate ? new Date(dueDate).toISOString() : null,
+      dueDate: dueDate ? dueDate.toDate(getLocalTimeZone()).toISOString().slice(0, 10) : null,
       assignedTo: assignedTo || null,
       priority,
     };
@@ -177,12 +178,12 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                   </div>
                 </div>
 
-                <Input
-                  type="date"
+                <DatePicker
                   label="Due Date"
-                  placeholder="Select due date"
+                  name="dueDate"
+                  //@ts-ignore
                   value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
+                  onChange={(date) => setDueDate(date)}
                 />
 
                 <Select

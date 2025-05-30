@@ -20,6 +20,7 @@ import { useTaskStore } from "../store/task-store";
 import { TaskPriority, TaskStatus } from "../types/task";
 import { statusConfig } from "./status-chip";
 import { priorityColors } from "./priority-chip";
+import { DateValue, getLocalTimeZone, } from "@internationalized/date";
 
 interface AddTaskModalProps {
   isOpen: boolean;
@@ -32,7 +33,7 @@ interface FormState {
   description: string;
   status: TaskStatus;
   tags: string[];
-  dueDate: string;
+  dueDate: DateValue | null;
   assignedTo: string;
   priority: TaskPriority;
   newTag: string;
@@ -43,7 +44,7 @@ const initialFormState: FormState = {
   description: "",
   status: "todo",
   tags: [],
-  dueDate: "",
+  dueDate: null,
   assignedTo: "",
   priority: "medium",
   newTag: "",
@@ -92,7 +93,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, ini
     const newTask = {
       ...formState,
       id: `task-${Date.now()}`,
-      dueDate: formState.dueDate ? new Date(formState.dueDate).toISOString() : null,
+      dueDate: formState.dueDate ? formState.dueDate.toDate(getLocalTimeZone()).toISOString().slice(0, 10) : null,
       assignedTo: formState.assignedTo || null,
       createdAt: new Date().toISOString(),
     };
@@ -108,7 +109,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, ini
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} placement="center" scrollBehavior="inside">
-      <ModalContent>
+      <ModalContent >
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">Add New Task</ModalHeader>
@@ -180,13 +181,12 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, ini
                   </div>
                 </div>
 
-                <Input
-                  type="date"
+                <DatePicker
                   label="Due Date"
-                  placeholder="Select due date"
                   name="dueDate"
+                  //@ts-ignore
                   value={formState.dueDate}
-                  onChange={(e) => setFormState({ ...formState, dueDate: e.target.value })}
+                  onChange={(date) => setFormState({ ...formState, dueDate: date })}
                 />
 
                 <Select
@@ -252,3 +252,4 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, ini
     </Modal>
   );
 };
+

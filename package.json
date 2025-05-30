@@ -17,6 +17,7 @@
     "@heroui/react": "2.7.8",
     "@heroui/use-theme": "2.1.6",
     "@iconify/react": "latest",
+    "@internationalized/date": "^3.8.1",
     "framer-motion": "^11.18.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
