@@ -37,7 +37,7 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
         onClick={() => setIsDetailOpen(true)}
       >
         <div className="flex items-center justify-between">
-          <ContextMenu task={task} onEdit={() => setIsDetailOpen(true)}   >
+          <ContextMenu task={task} onEdit={() => setIsDetailOpen(true)}>
             <div className="w-full p-4 pr-0">
               <div className="flex flex-1 items-center gap-3">
                 <Tooltip content={`Status: ${task.status.replace("-", " ")}`}>
@@ -62,9 +62,7 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
               </div>
 
               <div className="flex items-center gap-3">
-                {viewOptions.showDueDate && task.dueDate && (
-                  <DueDateChip dueDate={task.dueDate} />
-                )}
+                {viewOptions.showDueDate && task.dueDate && <DueDateChip dueDate={task.dueDate} />}
 
                 {viewOptions.showAssignee && assignedMember && (
                   <Tooltip content={assignedMember.name}>
