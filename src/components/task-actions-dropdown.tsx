@@ -18,7 +18,7 @@ export const DropdownList: React.FC<TaskActionsDropdownProps> = ({ onEdit, task 
   };
 
   return (
-    <Listbox selectionMode = 'none' aria-label="Task actions">
+    <Listbox selectionMode='none' aria-label="Task actions">
       <ListboxItem
         key="edit"
         startContent={<Icon icon="lucide:edit" className="text-sm" />}
