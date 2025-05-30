@@ -1,7 +1,14 @@
 import React from "react";
 import { useTaskStore } from "../store/task-store";
 import { Task, TaskStatus } from "../types/task";
-import { Button, Listbox, ListboxItem, Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
+import {
+  Button,
+  Listbox,
+  ListboxItem,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { statusConfig } from "./status-chip";
 
@@ -18,7 +25,7 @@ export const DropdownList: React.FC<TaskActionsDropdownProps> = ({ onEdit, task 
   };
 
   return (
-    <Listbox selectionMode='none' aria-label="Task actions">
+    <Listbox selectionMode="none" aria-label="Task actions">
       <ListboxItem
         key="edit"
         startContent={<Icon icon="lucide:edit" className="text-sm" />}
@@ -50,20 +57,32 @@ export const DropdownList: React.FC<TaskActionsDropdownProps> = ({ onEdit, task 
         Delete
       </ListboxItem>
     </Listbox>
-  )
-}
+  );
+};
 
 export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
   return (
-    <Popover isOpen={isOpen} onOpenChange={(open) => setIsOpen(open)} placement="bottom-end" shouldCloseOnBlur shouldCloseOnScroll>
+    <Popover
+      isOpen={isOpen}
+      onOpenChange={(open) => setIsOpen(open)}
+      placement="bottom-end"
+      shouldCloseOnBlur
+      shouldCloseOnScroll
+    >
       <PopoverTrigger>
         <Button isIconOnly variant="light" size="sm" className="text-default-400">
           <Icon icon="lucide:more-horizontal" className="text-sm" />
         </Button>
       </PopoverTrigger>
       <PopoverContent aria-label="Task actions">
-        <DropdownList {...props} onEdit={() => { props.onEdit(); setIsOpen(false) }} />
+        <DropdownList
+          {...props}
+          onEdit={() => {
+            props.onEdit();
+            setIsOpen(false);
+          }}
+        />
       </PopoverContent>
     </Popover>
   );
