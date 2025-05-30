@@ -12,6 +12,8 @@ import {
   SelectItem,
   Chip,
   cn,
+  Image,
+  DatePicker,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
@@ -200,9 +202,9 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, ini
                       startContent={
                         <div className="flex items-center gap-2">
                           <div
-                            className={`h-2 w-2 rounded-full ${member.isOnline ? "bg-success" : "bg-default-300"}`}
+                            className={cn("h-2 w-2 rounded-full", member.isOnline ? "bg-success" : "bg-default-300")}
                           />
-                          <img
+                          <Image
                             src={member.avatar}
                             alt={member.name}
                             className="h-6 w-6 rounded-full object-cover"

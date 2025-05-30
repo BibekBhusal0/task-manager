@@ -11,6 +11,8 @@ import {
   Select,
   SelectItem,
   Chip,
+  cn,
+  Image,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
@@ -31,6 +33,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
   const [tags, setTags] = React.useState<string[]>(task.tags);
   const [dueDate, setDueDate] = React.useState(
     task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : ""
+
   );
   const [assignedTo, setAssignedTo] = React.useState<string>(task.assignedTo || "");
   const [priority, setPriority] = React.useState<TaskPriority>(task.priority);
@@ -194,9 +197,9 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                       startContent={
                         <div className="flex items-center gap-2">
                           <div
-                            className={`h-2 w-2 rounded-full ${member.isOnline ? "bg-success" : "bg-default-300"}`}
+                            className={cn("h-2 w-2 rounded-full", member.isOnline ? "bg-success" : "bg-default-300")}
                           />
-                          <img
+                          <Image
                             src={member.avatar}
                             alt={member.name}
                             className="h-6 w-6 rounded-full object-cover"
