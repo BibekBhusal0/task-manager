@@ -36,7 +36,7 @@ function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
 
   const isOverThisColumn = over
     ? (id === over.id && active?.data.current?.type !== "column") ||
-      tasks.map((task) => task.id).includes(over.id as string)
+    tasks.map((task) => task.id).includes(over.id as string)
     : false;
 
   return (
@@ -98,54 +98,48 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
 
     console.count("running effect");
     const columnIds: TaskStatus[] = ["todo", "in-progress", "done"];
-    const sortTasksById = (tasks: Task[]) => tasks.slice().sort((a, b) => a.id.localeCompare(b.id));
 
-    let isIdDifferent = false;
-    for (const columnId of columnIds) {
-      if (
+    const getUpdatedColumn = (
+      columnId: TaskStatus,
+      prevColumnTasks: { [key in TaskStatus]: Task[] }
+    ): Task[] | null => {
+      const sortTasksById = (tasks: Task[]) => tasks.slice().sort((a, b) => a.id.localeCompare(b.id));
+
+      const isIdDifferent =
         JSON.stringify(sortTasksById(newColumnTasks[columnId]).map((task) => task.id)) !==
-        JSON.stringify(sortTasksById(columnTasks[columnId]).map((task) => task.id))
-      ) {
-        isIdDifferent = true;
-        break;
-      }
-    }
+        JSON.stringify(sortTasksById(prevColumnTasks[columnId]).map((task) => task.id));
 
-    if (isIdDifferent) {
-      // If IDs are different, overwrite the state
-      setColumnTasks(newColumnTasks);
-    } else {
-      // If IDs are the same, check for content differences
-      let isContentDifferent = false;
+      if (isIdDifferent) {
+        return newColumnTasks[columnId];
+      }
+
+      const isContentDifferent = newColumnTasks[columnId].some(
+        (task, index) => JSON.stringify(task) !== JSON.stringify(prevColumnTasks[columnId][index])
+      );
+
+      if (isContentDifferent) {
+        return prevColumnTasks[columnId].map(
+          (task) => newColumnTasks[columnId].find((t) => t.id === task.id) || task
+        );
+      }
+
+      return null;
+    };
+
+    setColumnTasks((prevColumnTasks) => {
+      let hasUpdates = false;
+      const updatedColumnTasks: { [key in TaskStatus]: Task[] } = { ...prevColumnTasks };
+
       for (const columnId of columnIds) {
-        if (
-          newColumnTasks[columnId].some(
-            (task, index) => JSON.stringify(task) !== JSON.stringify(columnTasks[columnId][index])
-          )
-        ) {
-          isContentDifferent = true;
-          break;
+        const updatedColumn = getUpdatedColumn(columnId, prevColumnTasks);
+        if (updatedColumn) {
+          updatedColumnTasks[columnId] = updatedColumn;
+          hasUpdates = true;
         }
       }
 
-      if (isContentDifferent) {
-        // If content is different, update the content while preserving the existing order
-        setColumnTasks((prevColumnTasks) => {
-          const updatedColumnTasks = {
-            todo: prevColumnTasks.todo.map(
-              (task) => newColumnTasks.todo.find((t) => t.id === task.id) || task
-            ),
-            "in-progress": prevColumnTasks["in-progress"].map(
-              (task) => newColumnTasks["in-progress"].find((t) => t.id === task.id) || task
-            ),
-            done: prevColumnTasks.done.map(
-              (task) => newColumnTasks.done.find((t) => t.id === task.id) || task
-            ),
-          };
-          return updatedColumnTasks;
-        });
-      }
-    }
+      return hasUpdates ? updatedColumnTasks : prevColumnTasks;
+    });
   }, [filteredTasks]);
 
   const columns = Object.entries(statusConfig).map(([key]) => key as TaskStatus);
