@@ -1,7 +1,7 @@
 import React from "react";
 import { useTaskStore } from "../store/task-store";
 import { Task, TaskStatus } from "../types/task";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
+import { Button, Listbox, ListboxItem, Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { statusConfig } from "./status-chip";
 
@@ -10,7 +10,7 @@ interface TaskActionsDropdownProps {
   onEdit: () => void;
 }
 
-export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = ({ onEdit, task }) => {
+export const DropdownList: React.FC<TaskActionsDropdownProps> = ({ onEdit, task }) => {
   const { deleteTask, changeStatus } = useTaskStore();
 
   const handleDelete = () => {
@@ -18,44 +18,53 @@ export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = ({ onEdit
   };
 
   return (
-    <Dropdown placement="bottom-end">
-      <DropdownTrigger>
+    <Listbox selectionMode = 'none' aria-label="Task actions">
+      <ListboxItem
+        key="edit"
+        startContent={<Icon icon="lucide:edit" className="text-sm" />}
+        onPress={onEdit}
+      >
+        Edit
+      </ListboxItem>
+      <>
+        {Object.entries(statusConfig).map(([status, config]) => (
+          <>
+            {status !== task.status && (
+              <ListboxItem
+                key={status}
+                startContent={<Icon icon={config.icon} className="text-sm" />}
+                onPress={() => changeStatus(task.id, status as TaskStatus)}
+              >
+                Move to {config.title}
+              </ListboxItem>
+            )}
+          </>
+        ))}
+      </>
+      <ListboxItem
+        key="delete"
+        color="danger"
+        startContent={<Icon icon="lucide:trash" className="text-sm" />}
+        onPress={handleDelete}
+      >
+        Delete
+      </ListboxItem>
+    </Listbox>
+  )
+}
+
+export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = (props) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  return (
+    <Popover isOpen={isOpen} onOpenChange={(open) => setIsOpen(open)} placement="bottom-end" shouldCloseOnBlur shouldCloseOnScroll>
+      <PopoverTrigger>
         <Button isIconOnly variant="light" size="sm" className="text-default-400">
           <Icon icon="lucide:more-horizontal" className="text-sm" />
         </Button>
-      </DropdownTrigger>
-      <DropdownMenu aria-label="Task actions">
-        <DropdownItem
-          key="edit"
-          startContent={<Icon icon="lucide:edit" className="text-sm" />}
-          onPress={onEdit}
-        >
-          Edit
-        </DropdownItem>
-        <>
-          {Object.entries(statusConfig).map(([status, config]) => (
-            <>
-              {status !== task.status && (
-                <DropdownItem
-                  key={status}
-                  startContent={<Icon icon={config.icon} className="text-sm" />}
-                  onPress={() => changeStatus(task.id, status as TaskStatus)}
-                >
-                  Move to {config.title}
-                </DropdownItem>
-              )}
-            </>
-          ))}
-        </>
-        <DropdownItem
-          key="delete"
-          color="danger"
-          startContent={<Icon icon="lucide:trash" className="text-sm" />}
-          onPress={handleDelete}
-        >
-          Delete
-        </DropdownItem>
-      </DropdownMenu>
-    </Dropdown>
+      </PopoverTrigger>
+      <PopoverContent aria-label="Task actions">
+        <DropdownList {...props} onEdit={() => { props.onEdit(); setIsOpen(false) }} />
+      </PopoverContent>
+    </Popover>
   );
 };
