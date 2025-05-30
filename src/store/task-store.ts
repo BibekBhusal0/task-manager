@@ -11,9 +11,11 @@ interface TaskState {
   viewOptions: ViewOptions;
   filter: TaskFilter;
   selectedMember: TeamMember | null;
+  itemsPerPage: number;
 
   // Actions
   addTask: (task: Task) => void;
+  setItemsPerPage:(n: number) =>void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   deleteTask: (taskId: string) => void;
   changeStatus: (taskId: string, newStatus: TaskStatus) => void;
@@ -27,6 +29,7 @@ interface TaskState {
 export const useTaskStore = create<TaskState>()(
   persist(
     (set) => ({
+      itemsPerPage: 20,
       tasks: initialTasks,
       members: initialMembers,
       viewType: "kanban",
@@ -46,6 +49,7 @@ export const useTaskStore = create<TaskState>()(
       selectedMember: null,
 
       addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
+      setItemsPerPage: (n) => set(() => ({itemsPerPage: n})),
 
       updateTask: (taskId, updates) =>
         set((state) => ({

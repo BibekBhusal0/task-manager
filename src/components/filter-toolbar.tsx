@@ -6,13 +6,16 @@ import {
   DropdownMenu,
   DropdownItem,
   Button,
+  Select,
+  SelectItem,
   Chip,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
 
 export const FilterToolbar: React.FC = () => {
-  const { filter, updateFilter, tasks, viewType } = useTaskStore();
+  const { filter, updateFilter, tasks, viewType, itemsPerPage, setItemsPerPage } = useTaskStore();
+  const numbers = [10, 20, 30, 40]
 
   // Extract unique tags from all tasks
   const allTags = React.useMemo(() => {
@@ -28,8 +31,6 @@ export const FilterToolbar: React.FC = () => {
   };
 
   const currentFilter = filter.sortBy + "-" + filter.sortDirection;
-  // __AUTO_GENERATED_PRINT_VAR_START__
-  console.log("FilterToolbar currentFilter:", currentFilter); // __AUTO_GENERATED_PRINT_VAR_END__
 
   const handleSortChange = (key: string) => {
     if (key === "reset") {
@@ -72,7 +73,7 @@ export const FilterToolbar: React.FC = () => {
         />
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex w-full items-center gap-2">
         <Dropdown>
           <DropdownTrigger>
             <Button
@@ -104,7 +105,7 @@ export const FilterToolbar: React.FC = () => {
         </Dropdown>
 
         {viewType !== "kanban" && (
-          <Dropdown>
+          <><Dropdown>
             <DropdownTrigger>
               <Button
                 variant="flat"
@@ -141,6 +142,20 @@ export const FilterToolbar: React.FC = () => {
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
+
+            <Select
+              classNames = {{ mainWrapper: 'w-16', base :'w-auto' }}
+              size = 'sm'
+              labelPlacement="outside-left"
+              label="Max items"
+              placeholder="Number"
+              selectionMode='single'
+              renderValue ={ (items) =><>{items.map((item)=> <div className ='text-md'>{ item.key as string }</div>)}</> }
+              selectedKeys={([ `${ itemsPerPage }` ])}
+            >
+              {numbers.map((n) => <SelectItem key={`${n}`} onPress={() => setItemsPerPage(n)}>{n}</SelectItem>)}
+            </Select>
+          </>
         )}
 
         {hasActiveFilters && (
