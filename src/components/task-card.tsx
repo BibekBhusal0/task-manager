@@ -6,7 +6,7 @@ import { useTaskStore } from "../store/task-store";
 import { TaskDetailModal } from "./task-detail-modal";
 import { PriorityChip } from "./priority-chip";
 import { DueDateChip } from "./due-date";
-import { useSortable } from "@dnd-kit/sortable";
+import { defaultAnimateLayoutChanges, useSortable, AnimateLayoutChanges } from "@dnd-kit/sortable";
 import { TagsChip } from "./tag-chips";
 import { ContextMenu } from "./task-actions-dropdown";
 
@@ -19,8 +19,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
   const viewOptions = useTaskStore().viewOptions;
   const { members } = useTaskStore();
   const [isDetailOpen, setIsDetailOpen] = React.useState(false);
+  const animateLayoutChanges: AnimateLayoutChanges = (args) =>defaultAnimateLayoutChanges({ ...args, wasDragging: true });
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
-    id: task.id,
+    id: task.id,animateLayoutChanges
   });
 
   const style = {
