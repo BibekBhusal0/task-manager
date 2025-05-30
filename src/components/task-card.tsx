@@ -19,9 +19,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
   const viewOptions = useTaskStore().viewOptions;
   const { members } = useTaskStore();
   const [isDetailOpen, setIsDetailOpen] = React.useState(false);
-  const animateLayoutChanges: AnimateLayoutChanges = (args) =>defaultAnimateLayoutChanges({ ...args, wasDragging: true });
+  const animateLayoutChanges: AnimateLayoutChanges = (args) =>
+    defaultAnimateLayoutChanges({ ...args, wasDragging: true });
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
-    id: task.id,animateLayoutChanges
+    id: task.id,
+    animateLayoutChanges,
   });
 
   const style = {

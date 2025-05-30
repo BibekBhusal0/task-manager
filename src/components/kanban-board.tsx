@@ -33,12 +33,12 @@ interface KanbanColumnProps {
 
 function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
-  const { setNodeRef, over, active } = useDroppable({ id, data: { type: "column", } });
+  const { setNodeRef, over, active } = useDroppable({ id, data: { type: "column" } });
   const config = statusConfig[id];
 
   const isOverThisColumn = over
     ? (id === over.id && active?.data.current?.type !== "column") ||
-    tasks.map((task) => task.id).includes(over.id as string)
+      tasks.map((task) => task.id).includes(over.id as string)
     : false;
 
   return (
@@ -81,21 +81,25 @@ function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
   );
 }
 
-function Trash () {
-  const { setNodeRef, over } = useDroppable({ id : 'trash', data: { type: "trash", } });
-  const overThis = over?.id === 'trash'
+function Trash() {
+  const { setNodeRef, over } = useDroppable({ id: "trash", data: { type: "trash" } });
+  const overThis = over?.id === "trash";
 
-  return <div 
-    ref = {setNodeRef}
-    className={ cn(
-    "absolute z-50 ", "text-xl  text-danger-700 bg-danger-50",
-    "flex justify-center items-center",
-    "w-60 h-32 top-10 left-1/2 -translate-x-1/2",
-    "border-2 border-dashed border-danger-400 rounded-lg",
-      overThis && "border-primary-400"
-  ) }>
-    Trash
-  </div>
+  return (
+    <div
+      ref={setNodeRef}
+      className={cn(
+        "absolute z-50",
+        "bg-danger-50 text-xl text-danger-700",
+        "flex items-center justify-center",
+        "left-1/2 top-10 h-32 w-60 -translate-x-1/2",
+        "rounded-lg border-2 border-dashed border-danger-400",
+        overThis && "border-primary-400"
+      )}
+    >
+      Trash
+    </div>
+  );
 }
 
 export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
@@ -124,7 +128,8 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
       columnId: TaskStatus,
       prevColumnTasks: { [key in TaskStatus]: Task[] }
     ): Task[] | null => {
-      const sortTasksById = (tasks: Task[]) => tasks.slice().sort((a, b) => a.id.localeCompare(b.id));
+      const sortTasksById = (tasks: Task[]) =>
+        tasks.slice().sort((a, b) => a.id.localeCompare(b.id));
 
       const prevIds = sortTasksById(prevColumnTasks[columnId]).map((task) => task.id);
       const newIds = sortTasksById(newColumnTasks[columnId]).map((task) => task.id);
@@ -135,7 +140,7 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
         if (newIds.length === prevIds.length - 1) {
           // Check if single item is deleted
           const deletedId = prevIds.find((id) => !newIds.includes(id));
-          console.log('deleted')
+          console.log("deleted");
           if (deletedId) {
             return prevColumnTasks[columnId].filter((task) => task.id !== deletedId);
           }
@@ -204,11 +209,10 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
     const overId = over?.id;
     if (!overId || active.id === overId) return;
 
-
     const activeColumnId = findColumnForTask(active.id);
 
-    if (overId === 'trash' && activeColumnId ) {
-      setTrashId(active.id)
+    if (overId === "trash" && activeColumnId) {
+      setTrashId(active.id);
       // Moving task to trash
       const activeTask = columnTasks[activeColumnId].find((task) => task.id === active.id);
       if (!activeTask) return;
@@ -219,16 +223,16 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
         newBoardState[activeColumnId] = activeColumnTasks.filter((task) => task.id !== active.id);
         return newBoardState;
       });
-      return
+      return;
     }
 
     const overColumnId = findColumnForTask(overId);
-    if (!overColumnId) return
+    if (!overColumnId) return;
 
-    if (trashId !== null){
-      if (typeof trashId !== 'string') return
-      setTrashId(null)
-      changeStatus(trashId , overColumnId);
+    if (trashId !== null) {
+      if (typeof trashId !== "string") return;
+      setTrashId(null);
+      changeStatus(trashId, overColumnId);
       setColumnTasks((prevBoardState) => {
         const newBoardState = { ...prevBoardState };
 
@@ -236,7 +240,7 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
         const overColumnTasks = newBoardState[overColumnId];
 
         const activeTask = filteredTasks.find((task) => task.id === active.id);
-        if (!activeTask) return prevBoardState; 
+        if (!activeTask) return prevBoardState;
 
         // Determine new index in the over column
         let newIndex: number;
@@ -256,10 +260,10 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
         ];
         return newBoardState;
       });
-      return
+      return;
     }
 
-    if (!activeColumnId ) return;
+    if (!activeColumnId) return;
     if (activeColumnId !== overColumnId) {
       // Moving task to a different column
       const activeTask = columnTasks[activeColumnId].find((task) => task.id === active.id);
@@ -303,19 +307,16 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
     setActiveId(null);
 
     const overId = over?.id;
-    if (overId ==='trash'){
-      console.log('trashing')
-      deleteTask(active.id)
-      return
+    if (overId === "trash") {
+      console.log("trashing");
+      deleteTask(active.id);
+      return;
     }
-
 
     const activeColumnId = findColumnForTask(active.id);
     if (!overId || !activeColumnId) return;
     const overColumnId = findColumnForTask(overId);
     if (!overColumnId) return;
-
-
 
     if (activeColumnId === overColumnId) {
       // Reordering within the same column
@@ -353,7 +354,7 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
       onDragCancel={handleDragCancel}
       measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
     >
-      {activeId!== null && <Trash />}
+      {activeId !== null && <Trash />}
       {/* <Trash /> */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {columns.map((column) => (

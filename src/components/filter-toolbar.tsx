@@ -112,7 +112,7 @@ export const FilterToolbar: React.FC = () => {
                   variant="flat"
                   size="sm"
                   startContent={<Icon icon="lucide:arrow-up-down" className="text-sm" />}
-                  color = {"createdAt-desc" === currentFilter ?'default' : 'primary' }
+                  color={"createdAt-desc" === currentFilter ? "default" : "primary"}
                 >
                   Sort
                 </Button>
@@ -144,8 +144,6 @@ export const FilterToolbar: React.FC = () => {
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
-
-
           </>
         )}
 
@@ -164,27 +162,32 @@ export const FilterToolbar: React.FC = () => {
         {viewType !== "kanban" && (
           <>
             <Select
-            classNames={{ mainWrapper: "w-16", base: "w-auto pl-2 border-l-2 border-divider", label: 'text-sm' }}
-            size="sm"
-            labelPlacement="outside-left"
-            label="Max items"
-            placeholder="Number"
-            selectionMode="single"
-            renderValue={(items) => (
-              <>
-                {items.map((item) => (
-                  <div className="text-md">{item.key as string}</div>
-                ))}
-              </>
-            )}
-            selectedKeys={[`${itemsPerPage}`]}
-          >
-            {numbers.map((n) => (
-              <SelectItem key={`${n}`} onPress={() => setItemsPerPage(n)}>
-                {n}
-              </SelectItem>
-            ))}
-          </Select></>
+              classNames={{
+                mainWrapper: "w-16",
+                base: "w-auto pl-2 border-l-2 border-divider",
+                label: "text-sm",
+              }}
+              size="sm"
+              labelPlacement="outside-left"
+              label="Max items"
+              placeholder="Number"
+              selectionMode="single"
+              renderValue={(items) => (
+                <>
+                  {items.map((item) => (
+                    <div className="text-md">{item.key as string}</div>
+                  ))}
+                </>
+              )}
+              selectedKeys={[`${itemsPerPage}`]}
+            >
+              {numbers.map((n) => (
+                <SelectItem key={`${n}`} onPress={() => setItemsPerPage(n)}>
+                  {n}
+                </SelectItem>
+              ))}
+            </Select>
+          </>
         )}
       </div>
     </div>
