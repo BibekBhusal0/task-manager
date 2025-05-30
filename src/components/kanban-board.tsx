@@ -1,6 +1,7 @@
 import { useCallback, useState, useEffect } from "react";
 import {
   DndContext,
+  useDroppable,
   useSensor,
   useSensors,
   MouseSensor,
@@ -10,7 +11,7 @@ import {
   DragOverlay,
   PointerActivationConstraint,
 } from "@dnd-kit/core";
-import { SortableContext, useSortable, arrayMove } from "@dnd-kit/sortable";
+import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { useTaskStore } from "../store/task-store";
 import { Task, TaskStatus } from "../types/task";
 import { Card, CardBody, CardFooter, CardHeader, cn, Divider } from "@heroui/react";
@@ -31,7 +32,7 @@ interface KanbanColumnProps {
 
 function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
-  const { setNodeRef, over, active } = useSortable({ id, data: { type: "column", tasks: tasks } });
+  const { setNodeRef, over, active } = useDroppable({ id, data: { type: "column", tasks: tasks } });
   const config = statusConfig[id];
 
   const isOverThisColumn = over
