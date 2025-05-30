@@ -33,7 +33,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
 
   return (
     <>
-      <ContextMenu task={task} onEdit={() => setIsDetailOpen(true)} disabled={overlay}>
         <Card
           ref={setNodeRef}
           {...attributes}
@@ -45,7 +44,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
           )}
           style={style}
         >
-          <div className="gap-2 p-2" onClick={() => setIsDetailOpen(true)}>
+          <ContextMenu className="gap-2 p-2" onClick={() => setIsDetailOpen(true)} task={task} onEdit={() => setIsDetailOpen(true)} disabled={overlay}>
             <div className="flex items-start justify-between">
               <h3 className="text-sm font-medium">{task.title}</h3>
             </div>
@@ -72,9 +71,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
 
               {viewOptions.showDueDate && task.dueDate && <DueDateChip dueDate={task.dueDate} />}
             </div>
-          </div>
+          </ContextMenu>
         </Card>
-      </ContextMenu>
 
       <TaskDetailModal isOpen={isDetailOpen} onClose={() => setIsDetailOpen(false)} task={task} />
     </>
