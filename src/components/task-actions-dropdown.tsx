@@ -88,61 +88,64 @@ export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = (props) =
   );
 };
 
-interface ContextMenuProps {
-  children?: React.ReactNode;
-  onEdit: () => void;
-  task: Task;
+type ContextMenuProps = React.HTMLAttributes<HTMLDivElement> & TaskActionsDropdownProps & {
   disabled?: boolean;
 }
 
-export const ContextMenu: React.FC<ContextMenuProps> = ({
-  children,
-  disabled = true,
-  ...props
-}) => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [position, setPosition] = React.useState({ x: 0, y: 0 });
+export const ContextMenu = React.forwardRef<HTMLDivElement, ContextMenuProps>(
+  ({ children, disabled = false, onEdit, task, ...props }, ref) => {
+    const [isOpen, setIsOpen] = React.useState(false);
+    const [position, setPosition] = React.useState({ x: 0, y: 0 });
 
-  React.useEffect(() => {
-    const handleScroll = () => {
-      if (isOpen) setIsOpen(false);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isOpen]);
+    React.useEffect(() => {
+      const handleScroll = () => {
+        if (isOpen) setIsOpen(false);
+      };
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }, [isOpen]);
 
-  const handleContextMenu = React.useCallback((event: React.MouseEvent) => {
-    event.preventDefault();
-    if (disabled) return;
-    setPosition({ x: event.clientX, y: event.clientY });
-    setIsOpen(true);
-  }, []);
+    const handleContextMenu = React.useCallback((event: React.MouseEvent) => {
+      event.preventDefault();
+      if (disabled) return;
+      setPosition({ x: event.clientX, y: event.clientY });
+      setIsOpen(true);
+    }, [disabled,]);
 
-  return (
-    <Popover
-      isOpen={isOpen}
-      onOpenChange={setIsOpen}
-      shouldCloseOnBlur
-      shouldCloseOnScroll
-      onClose={() => setIsOpen(false)}
-      style={{
-        position: "fixed",
-        top: position.y,
-        left: position.x,
-      }}
-    >
-      <div className="w-full" onContextMenu={handleContextMenu}>
-        {children}
-      </div>
-      <PopoverContent>
-        <DropdownList
+    return (
+      <Popover
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        shouldCloseOnBlur
+        shouldCloseOnScroll
+        onClose={() => setIsOpen(false)}
+        style={{
+          position: "fixed",
+          top: position.y,
+          left: position.x,
+        }}
+      >
+        <div
+          className="w-full"
+          onContextMenu={handleContextMenu}
+          ref={ref}
           {...props}
-          onEdit={() => {
-            props.onEdit();
-            setIsOpen(false);
-          }}
-        />
-      </PopoverContent>
-    </Popover>
-  );
-};
+        >
+          {children}
+        </div>
+        <PopoverContent>
+          <DropdownList
+            onEdit={() => {
+              onEdit();
+              setIsOpen(false);
+            }}
+            task={task}
+          />
+        </PopoverContent>
+      </Popover>
+    );
+  }
+);
+
+ContextMenu.displayName = "ContextMenu";
+
