@@ -33,7 +33,7 @@ interface KanbanColumnProps {
 
 function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
-  const { setNodeRef, over, active } = useDroppable({ id, data: { type: "column", tasks: tasks } });
+  const { setNodeRef, over, active } = useDroppable({ id, data: { type: "column", } });
   const config = statusConfig[id];
 
   const isOverThisColumn = over
@@ -81,9 +81,28 @@ function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
   );
 }
 
+function Trash () {
+  const { setNodeRef, over } = useDroppable({ id : 'trash', data: { type: "trash", } });
+  const overThis = over?.id === 'trash'
+
+  return <div 
+    ref = {setNodeRef}
+    className={ cn(
+    "absolute z-50 ", "text-xl  text-danger-700 bg-danger-50",
+    "flex justify-center items-center",
+    "w-60 h-32 top-10 left-1/2 -translate-x-1/2",
+    "border-2 border-dashed border-danger-400 rounded-lg",
+      overThis && "border-primary-400"
+  ) }>
+    Trash
+  </div>
+}
+
 export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
   const changeStatus = useTaskStore((state) => state.changeStatus);
+  const deleteTask = useTaskStore((state) => state.deleteTask);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+  const [trashId, setTrashId] = useState<UniqueIdentifier | null>(null);
 
   const [columnTasks, setColumnTasks] = useState<{ [key in TaskStatus]: Task[] }>({
     todo: [],
@@ -185,10 +204,62 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
     const overId = over?.id;
     if (!overId || active.id === overId) return;
 
-    const activeColumnId = findColumnForTask(active.id);
-    const overColumnId = findColumnForTask(overId);
 
-    if (!activeColumnId || !overColumnId) return;
+    const activeColumnId = findColumnForTask(active.id);
+
+    if (overId === 'trash' && activeColumnId ) {
+      setTrashId(active.id)
+      // Moving task to trash
+      const activeTask = columnTasks[activeColumnId].find((task) => task.id === active.id);
+      if (!activeTask) return;
+      setColumnTasks((prevBoardState) => {
+        const newBoardState = { ...prevBoardState };
+        const activeColumnTasks = newBoardState[activeColumnId];
+        // Remove from active column
+        newBoardState[activeColumnId] = activeColumnTasks.filter((task) => task.id !== active.id);
+        return newBoardState;
+      });
+      return
+    }
+
+    const overColumnId = findColumnForTask(overId);
+    if (!overColumnId) return
+
+    if (trashId !== null){
+      if (typeof trashId !== 'string') return
+      setTrashId(null)
+      changeStatus(trashId , overColumnId);
+      setColumnTasks((prevBoardState) => {
+        const newBoardState = { ...prevBoardState };
+
+        // const activeColumnTasks = newBoardState[activeColumnId];
+        const overColumnTasks = newBoardState[overColumnId];
+
+        const activeTask = filteredTasks.find((task) => task.id === active.id);
+        if (!activeTask) return prevBoardState; 
+
+        // Determine new index in the over column
+        let newIndex: number;
+        if (columns.some((col) => col === overId)) {
+          // If dragging over the column header/empty space
+          newIndex = overColumnTasks.length; // Add to end
+        } else {
+          // If dragging over another task
+          const overIndex = overColumnTasks.findIndex((task) => task.id === overId);
+          newIndex = overIndex !== -1 ? overIndex : overColumnTasks.length;
+        }
+        // Insert into over column
+        newBoardState[overColumnId] = [
+          ...overColumnTasks.slice(0, newIndex),
+          activeTask,
+          ...overColumnTasks.slice(newIndex),
+        ];
+        return newBoardState;
+      });
+      return
+    }
+
+    if (!activeColumnId ) return;
     if (activeColumnId !== overColumnId) {
       // Moving task to a different column
       const activeTask = columnTasks[activeColumnId].find((task) => task.id === active.id);
@@ -231,14 +302,20 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
   const handleDragEnd = ({ active, over }: { active: any; over: any }) => {
     setActiveId(null);
 
-    const activeColumnId = findColumnForTask(active.id);
     const overId = over?.id;
+    if (overId ==='trash'){
+      console.log('trashing')
+      deleteTask(active.id)
+      return
+    }
 
+
+    const activeColumnId = findColumnForTask(active.id);
     if (!overId || !activeColumnId) return;
-
     const overColumnId = findColumnForTask(overId);
-
     if (!overColumnId) return;
+
+
 
     if (activeColumnId === overColumnId) {
       // Reordering within the same column
@@ -276,6 +353,8 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
       onDragCancel={handleDragCancel}
       measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
     >
+      {activeId!== null && <Trash />}
+      {/* <Trash /> */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {columns.map((column) => (
           <KanbanColumn key={column} id={column} tasks={columnTasks[column]}>
