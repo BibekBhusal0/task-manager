@@ -16,7 +16,7 @@ export const TaskList: React.FC<TaskListProps> = ({ filteredTasks }) => {
       <CardBody className="p-0">
         <div>
           {filteredTasks.map((task, index) => (
-            <TaskListItem key={filteredTasks.length - index} task={task} viewOptions={viewOptions} />
+            <TaskListItem key={index} task={task} viewOptions={viewOptions} />
           ))}
           {filteredTasks.length === 0 && (
             <div className="py-12 text-center text-default-400">No tasks match your filters</div>

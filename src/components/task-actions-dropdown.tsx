@@ -17,19 +17,23 @@ interface TaskActionsDropdownProps {
   onEdit: () => void;
 }
 
-export const DropdownList: React.FC<TaskActionsDropdownProps> = ({ onEdit, task }) => {
+export const DropdownList: React.FC<TaskActionsDropdownProps & { onClose?: () => void }> = ({ onEdit, task, onClose = () => { } }) => {
   const { deleteTask, changeStatus } = useTaskStore();
 
   const handleDelete = () => {
     deleteTask(task.id);
+    onClose()
   };
+  const handleEdit = () => {
+    onEdit(); onClose()
+  }
 
   return (
     <Listbox selectionMode="none" aria-label="Task actions">
       <ListboxItem
         key="edit"
         startContent={<Icon icon="lucide:edit" className="text-sm" />}
-        onPress={onEdit}
+        onPress={handleEdit}
       >
         Edit
       </ListboxItem>
@@ -78,10 +82,7 @@ export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = (props) =
       <PopoverContent aria-label="Task actions">
         <DropdownList
           {...props}
-          onEdit={() => {
-            props.onEdit();
-            setIsOpen(false);
-          }}
+          onClose={() => setIsOpen(false)}
         />
       </PopoverContent>
     </Popover>
@@ -93,7 +94,7 @@ type ContextMenuProps = React.HTMLAttributes<HTMLDivElement> & TaskActionsDropdo
 }
 
 export const ContextMenu = React.forwardRef<HTMLDivElement, ContextMenuProps>(
-  ({ children, disabled = false, onEdit, task, ...props }, ref) => {
+  ({ children, disabled = false, task, onEdit, ...props }, ref) => {
     const [isOpen, setIsOpen] = React.useState(false);
     const [position, setPosition] = React.useState({ x: 0, y: 0 });
 
@@ -135,11 +136,8 @@ export const ContextMenu = React.forwardRef<HTMLDivElement, ContextMenuProps>(
         </div>
         <PopoverContent>
           <DropdownList
-            onEdit={() => {
-              onEdit();
-              setIsOpen(false);
-            }}
-            task={task}
+            onClose={() => setIsOpen(false)}
+            {...{ task, onEdit }}
           />
         </PopoverContent>
       </Popover>
