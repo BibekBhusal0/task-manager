@@ -105,11 +105,20 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
     ): Task[] | null => {
       const sortTasksById = (tasks: Task[]) => tasks.slice().sort((a, b) => a.id.localeCompare(b.id));
 
-      const isIdDifferent =
-        JSON.stringify(sortTasksById(newColumnTasks[columnId]).map((task) => task.id)) !==
-        JSON.stringify(sortTasksById(prevColumnTasks[columnId]).map((task) => task.id));
+      const prevIds = sortTasksById(prevColumnTasks[columnId]).map((task) => task.id);
+      const newIds = sortTasksById(newColumnTasks[columnId]).map((task) => task.id);
+
+      const isIdDifferent = JSON.stringify(newIds) !== JSON.stringify(prevIds);
 
       if (isIdDifferent) {
+        if (newIds.length === prevIds.length - 1) {
+          // Check if single item is deleted
+          const deletedId = prevIds.find((id) => !newIds.includes(id));
+          console.log('deleted')
+          if (deletedId) {
+            return prevColumnTasks[columnId].filter((task) => task.id !== deletedId);
+          }
+        }
         return newColumnTasks[columnId];
       }
 
