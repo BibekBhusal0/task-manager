@@ -5,12 +5,11 @@ import { Task, ViewOptions } from "../types/task";
 import { useTaskStore } from "../store/task-store";
 import { motion } from "framer-motion";
 import { TaskDetailModal } from "./task-detail-modal";
-import { TaskActionsDropdown, DropdownList } from "./task-actions-dropdown";
+import { TaskActionsDropdown, ContextMenu } from "./task-actions-dropdown";
 import { PriorityChip } from "./priority-chip";
 import { statusConfig } from "./status-chip";
 import { DueDateChip } from "./due-date";
 import { TagsChip } from "./tag-chips";
-import { ContextMenu, ContextMenuTrigger, ContextMenuContent } from "./ui/context-menu";
 
 interface TaskListItemProps {
   task: Task;
@@ -38,8 +37,7 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
         onClick={() => setIsDetailOpen(true)}
       >
         <div className="flex items-center justify-between">
-          <ContextMenu>
-            <ContextMenuTrigger className="w-full">
+          <ContextMenu task={task} onEdit={() => setIsDetailOpen(true)}   >
               <div className="w-full p-4 pr-0">
                 <div className="flex flex-1 items-center gap-3">
                   <Tooltip content={`Status: ${task.status.replace("-", " ")}`}>
@@ -80,11 +78,6 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
                   )}
                 </div>
               </div>
-            </ContextMenuTrigger>
-
-            <ContextMenuContent>
-              <DropdownList task={task} onEdit={() => setIsDetailOpen(true)} />
-            </ContextMenuContent>
           </ContextMenu>
 
           <div className="px-2">

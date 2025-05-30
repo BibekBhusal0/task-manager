@@ -87,3 +87,60 @@ export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = (props) =
     </Popover>
   );
 };
+
+interface ContextMenuProps {
+  children: React.ReactNode;
+  onEdit: () => void;
+  task: Task
+}
+
+export const ContextMenu: React.FC<ContextMenuProps> = ({ children, ...props }) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [position, setPosition] = React.useState({ x: 0, y: 0 });
+
+  React.useEffect(() => {
+      const handleScroll = () => {
+      if (isOpen) setIsOpen(false);
+    }
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isOpen]);
+
+  const handleContextMenu = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      setPosition({ x: event.clientX, y: event.clientY });
+      setIsOpen(true);
+    },
+    []
+  );
+
+  return (
+    <Popover
+      isOpen={isOpen}
+      onOpenChange={setIsOpen}
+      shouldCloseOnBlur
+      shouldCloseOnScroll
+      onClose={() => setIsOpen(false)}
+      style={{
+        position: 'fixed',
+        top: position.y,
+        left: position.x,
+      }}
+    >
+      <div className='w-full' onContextMenu={handleContextMenu}>
+        {children}
+      </div>
+      <PopoverContent >
+
+        <DropdownList
+          {...props}
+          onEdit={() => {
+            props.onEdit();
+            setIsOpen(false);
+          }}
+        />
+      </PopoverContent>
+    </Popover>
+  );
+};
