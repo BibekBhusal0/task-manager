@@ -18,7 +18,7 @@ import {
 import { Icon } from "@iconify/react";
 import { useTaskStore } from "../store/task-store";
 import { Task, TaskPriority, TaskStatus } from "../types/task";
-import { DateValue, getLocalTimeZone, parseDate, } from "@internationalized/date";
+import { DateValue, getLocalTimeZone, parseDate } from "@internationalized/date";
 
 interface TaskDetailModalProps {
   isOpen: boolean;
@@ -198,7 +198,10 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ isOpen, onClos
                       startContent={
                         <div className="flex items-center gap-2">
                           <div
-                            className={cn("h-2 w-2 rounded-full", member.isOnline ? "bg-success" : "bg-default-300")}
+                            className={cn(
+                              "h-2 w-2 rounded-full",
+                              member.isOnline ? "bg-success" : "bg-default-300"
+                            )}
                           />
                           <Image
                             src={member.avatar}

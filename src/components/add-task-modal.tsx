@@ -20,7 +20,7 @@ import { useTaskStore } from "../store/task-store";
 import { TaskPriority, TaskStatus } from "../types/task";
 import { statusConfig } from "./status-chip";
 import { priorityColors } from "./priority-chip";
-import { DateValue, getLocalTimeZone, } from "@internationalized/date";
+import { DateValue, getLocalTimeZone } from "@internationalized/date";
 
 interface AddTaskModalProps {
   isOpen: boolean;
@@ -93,7 +93,9 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, ini
     const newTask = {
       ...formState,
       id: `task-${Date.now()}`,
-      dueDate: formState.dueDate ? formState.dueDate.toDate(getLocalTimeZone()).toISOString().slice(0, 10) : null,
+      dueDate: formState.dueDate
+        ? formState.dueDate.toDate(getLocalTimeZone()).toISOString().slice(0, 10)
+        : null,
       assignedTo: formState.assignedTo || null,
       createdAt: new Date().toISOString(),
     };
@@ -109,7 +111,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, ini
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} placement="center" scrollBehavior="inside">
-      <ModalContent >
+      <ModalContent>
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">Add New Task</ModalHeader>
@@ -202,7 +204,10 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, ini
                       startContent={
                         <div className="flex items-center gap-2">
                           <div
-                            className={cn("h-2 w-2 rounded-full", member.isOnline ? "bg-success" : "bg-default-300")}
+                            className={cn(
+                              "h-2 w-2 rounded-full",
+                              member.isOnline ? "bg-success" : "bg-default-300"
+                            )}
                           />
                           <Image
                             src={member.avatar}
@@ -252,4 +257,3 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, ini
     </Modal>
   );
 };
-

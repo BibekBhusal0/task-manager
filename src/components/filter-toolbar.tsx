@@ -15,7 +15,7 @@ import { useTaskStore } from "../store/task-store";
 
 export const FilterToolbar: React.FC = () => {
   const { filter, updateFilter, tasks, viewType, itemsPerPage, setItemsPerPage } = useTaskStore();
-  const numbers = [10, 20, 30, 40]
+  const numbers = [10, 20, 30, 40];
 
   // Extract unique tags from all tasks
   const allTags = React.useMemo(() => {
@@ -105,55 +105,66 @@ export const FilterToolbar: React.FC = () => {
         </Dropdown>
 
         {viewType !== "kanban" && (
-          <><Dropdown>
-            <DropdownTrigger>
-              <Button
-                variant="flat"
-                size="sm"
-                startContent={<Icon icon="lucide:arrow-up-down" className="text-sm" />}
+          <>
+            <Dropdown>
+              <DropdownTrigger>
+                <Button
+                  variant="flat"
+                  size="sm"
+                  startContent={<Icon icon="lucide:arrow-up-down" className="text-sm" />}
+                >
+                  Sort
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                aria-label="Sort options"
+                selectedKeys={[currentFilter]}
+                selectionMode="single"
+                onAction={handleSortChange}
               >
-                Sort
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              aria-label="Sort options"
-              selectedKeys={[currentFilter]}
-              selectionMode="single"
-              onAction={handleSortChange}
-            >
-              <DropdownItem key="createdAt-desc" startContent={<Icon icon="lucide:calendar" />}>
-                Newest first
-              </DropdownItem>
-              <DropdownItem key="createdAt-asc" startContent={<Icon icon="lucide:calendar" />}>
-                Oldest first
-              </DropdownItem>
-              <DropdownItem key="dueDate-asc" startContent={<Icon icon="lucide:clock" />}>
-                Due soon
-              </DropdownItem>
-              <DropdownItem key="priority-desc" startContent={<Icon icon="lucide:flag" />}>
-                Highest priority
-              </DropdownItem>
-              <DropdownItem
-                key="reset"
-                startContent={<Icon icon="lucide:rotate-ccw" />}
-                color="danger"
-              >
-                Reset sorting
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+                <DropdownItem key="createdAt-desc" startContent={<Icon icon="lucide:calendar" />}>
+                  Newest first
+                </DropdownItem>
+                <DropdownItem key="createdAt-asc" startContent={<Icon icon="lucide:calendar" />}>
+                  Oldest first
+                </DropdownItem>
+                <DropdownItem key="dueDate-asc" startContent={<Icon icon="lucide:clock" />}>
+                  Due soon
+                </DropdownItem>
+                <DropdownItem key="priority-desc" startContent={<Icon icon="lucide:flag" />}>
+                  Highest priority
+                </DropdownItem>
+                <DropdownItem
+                  key="reset"
+                  startContent={<Icon icon="lucide:rotate-ccw" />}
+                  color="danger"
+                >
+                  Reset sorting
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
 
             <Select
-              classNames = {{ mainWrapper: 'w-16', base :'w-auto' }}
-              size = 'sm'
+              classNames={{ mainWrapper: "w-16", base: "w-auto" }}
+              size="sm"
               labelPlacement="outside-left"
               label="Max items"
               placeholder="Number"
-              selectionMode='single'
-              renderValue ={ (items) =><>{items.map((item)=> <div className ='text-md'>{ item.key as string }</div>)}</> }
-              selectedKeys={([ `${ itemsPerPage }` ])}
+              selectionMode="single"
+              renderValue={(items) => (
+                <>
+                  {items.map((item) => (
+                    <div className="text-md">{item.key as string}</div>
+                  ))}
+                </>
+              )}
+              selectedKeys={[`${itemsPerPage}`]}
             >
-              {numbers.map((n) => <SelectItem key={`${n}`} onPress={() => setItemsPerPage(n)}>{n}</SelectItem>)}
+              {numbers.map((n) => (
+                <SelectItem key={`${n}`} onPress={() => setItemsPerPage(n)}>
+                  {n}
+                </SelectItem>
+              ))}
             </Select>
           </>
         )}

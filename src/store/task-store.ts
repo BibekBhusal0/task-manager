@@ -15,7 +15,7 @@ interface TaskState {
 
   // Actions
   addTask: (task: Task) => void;
-  setItemsPerPage:(n: number) =>void;
+  setItemsPerPage: (n: number) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   deleteTask: (taskId: string) => void;
   changeStatus: (taskId: string, newStatus: TaskStatus) => void;
@@ -49,7 +49,7 @@ export const useTaskStore = create<TaskState>()(
       selectedMember: null,
 
       addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
-      setItemsPerPage: (n) => set(() => ({itemsPerPage: n})),
+      setItemsPerPage: (n) => set(() => ({ itemsPerPage: n })),
 
       updateTask: (taskId, updates) =>
         set((state) => ({

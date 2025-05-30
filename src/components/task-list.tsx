@@ -20,7 +20,9 @@ export const TaskList: React.FC<TaskListProps> = ({ filteredTasks }) => {
     return filteredTasks.slice(start, end);
   }, [page, filteredTasks, itemsPerPage]);
 
-  React.useEffect(() => { setPage(1) }, [itemsPerPage])
+  React.useEffect(() => {
+    setPage(1);
+  }, [itemsPerPage]);
 
   return (
     <Card>
@@ -34,20 +36,21 @@ export const TaskList: React.FC<TaskListProps> = ({ filteredTasks }) => {
           )}
         </div>
       </CardBody>
-          {pages !== 1 &&<Divider />}
+      {pages !== 1 && <Divider />}
       <CardFooter>
-          {pages !== 1 &&<div className="flex w-full justify-center">
+        {pages !== 1 && (
+          <div className="flex w-full justify-center">
             <Pagination
-            isCompact
-            showControls
-            showShadow
-            color="primary"
-            page={page}
-            total={pages}
-            onChange={(page) => setPage(page)}
-          />
-        </div>
-        }
+              isCompact
+              showControls
+              showShadow
+              color="primary"
+              page={page}
+              total={pages}
+              onChange={(page) => setPage(page)}
+            />
+          </div>
+        )}
       </CardFooter>
     </Card>
   );

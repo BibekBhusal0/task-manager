@@ -17,16 +17,21 @@ interface TaskActionsDropdownProps {
   onEdit: () => void;
 }
 
-export const DropdownList: React.FC<TaskActionsDropdownProps & { onClose?: () => void }> = ({ onEdit, task, onClose = () => { } }) => {
+export const DropdownList: React.FC<TaskActionsDropdownProps & { onClose?: () => void }> = ({
+  onEdit,
+  task,
+  onClose = () => {},
+}) => {
   const { deleteTask, changeStatus } = useTaskStore();
 
   const handleDelete = () => {
     deleteTask(task.id);
-    onClose()
+    onClose();
   };
   const handleEdit = () => {
-    onEdit(); onClose()
-  }
+    onEdit();
+    onClose();
+  };
 
   return (
     <Listbox selectionMode="none" aria-label="Task actions">
@@ -80,18 +85,16 @@ export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = (props) =
         </Button>
       </PopoverTrigger>
       <PopoverContent aria-label="Task actions">
-        <DropdownList
-          {...props}
-          onClose={() => setIsOpen(false)}
-        />
+        <DropdownList {...props} onClose={() => setIsOpen(false)} />
       </PopoverContent>
     </Popover>
   );
 };
 
-type ContextMenuProps = React.HTMLAttributes<HTMLDivElement> & TaskActionsDropdownProps & {
-  disabled?: boolean;
-}
+type ContextMenuProps = React.HTMLAttributes<HTMLDivElement> &
+  TaskActionsDropdownProps & {
+    disabled?: boolean;
+  };
 
 export const ContextMenu = React.forwardRef<HTMLDivElement, ContextMenuProps>(
   ({ children, disabled = false, task, onEdit, ...props }, ref) => {
@@ -106,12 +109,15 @@ export const ContextMenu = React.forwardRef<HTMLDivElement, ContextMenuProps>(
       return () => window.removeEventListener("scroll", handleScroll);
     }, [isOpen]);
 
-    const handleContextMenu = React.useCallback((event: React.MouseEvent) => {
-      event.preventDefault();
-      if (disabled) return;
-      setPosition({ x: event.clientX, y: event.clientY });
-      setIsOpen(true);
-    }, [disabled,]);
+    const handleContextMenu = React.useCallback(
+      (event: React.MouseEvent) => {
+        event.preventDefault();
+        if (disabled) return;
+        setPosition({ x: event.clientX, y: event.clientY });
+        setIsOpen(true);
+      },
+      [disabled]
+    );
 
     return (
       <Popover
@@ -126,19 +132,11 @@ export const ContextMenu = React.forwardRef<HTMLDivElement, ContextMenuProps>(
           left: position.x,
         }}
       >
-        <div
-          className="w-full"
-          onContextMenu={handleContextMenu}
-          ref={ref}
-          {...props}
-        >
+        <div className="w-full" onContextMenu={handleContextMenu} ref={ref} {...props}>
           {children}
         </div>
         <PopoverContent>
-          <DropdownList
-            onClose={() => setIsOpen(false)}
-            {...{ task, onEdit }}
-          />
+          <DropdownList onClose={() => setIsOpen(false)} {...{ task, onEdit }} />
         </PopoverContent>
       </Popover>
     );
@@ -146,4 +144,3 @@ export const ContextMenu = React.forwardRef<HTMLDivElement, ContextMenuProps>(
 );
 
 ContextMenu.displayName = "ContextMenu";
-

@@ -32,4 +32,3 @@ export const initialMembers: TeamMember[] = [
     isOnline: false,
   },
 ];
-

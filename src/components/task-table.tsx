@@ -85,31 +85,36 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
     return filteredTasks.slice(start, end);
   }, [page, filteredTasks, itemsPerPage]);
 
-  React.useEffect(() => { setPage(1) }, [itemsPerPage])
+  React.useEffect(() => {
+    setPage(1);
+  }, [itemsPerPage]);
 
   // Find the selected task if any
   const taskToEdit = selectedTask ? filteredTasks.find((task) => task.id === selectedTask) : null;
 
   return (
     <>
-      <Table aria-label="Tasks table" onRowAction={(key: string) => setSelectedTask(key)}
+      <Table
+        aria-label="Tasks table"
+        onRowAction={(key: string) => setSelectedTask(key)}
         bottomContent={
-          <>{pages !== 1 &&
-            <>
-              <Divider />
-              <div className="flex w-full justify-center pt-1">
-                <Pagination
-                  isCompact
-                  showControls
-                  showShadow
-                  color="primary"
-                  page={page}
-                  total={pages}
-                  onChange={(page) => setPage(page)}
-                />
-              </div>
-            </>
-          }
+          <>
+            {pages !== 1 && (
+              <>
+                <Divider />
+                <div className="flex w-full justify-center pt-1">
+                  <Pagination
+                    isCompact
+                    showControls
+                    showShadow
+                    color="primary"
+                    page={page}
+                    total={pages}
+                    onChange={(page) => setPage(page)}
+                  />
+                </div>
+              </>
+            )}
           </>
         }
       >

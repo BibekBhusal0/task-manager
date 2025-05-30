@@ -26,8 +26,15 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
 
   return (
     <>
-      <div className="flex items-center justify-between cursor-pointer hover:bg-default-50 border-b-1 border-divider last:border-b-0" onClick={() => setIsDetailOpen(true)}>
-        <ContextMenu className="w-full p-4 pr-0 flex flex-col gap-2" task={task} onEdit={() => setIsDetailOpen(true)}>
+      <div
+        className="flex cursor-pointer items-center justify-between border-b-1 border-divider last:border-b-0 hover:bg-default-50"
+        onClick={() => setIsDetailOpen(true)}
+      >
+        <ContextMenu
+          className="flex w-full flex-col gap-2 p-4 pr-0"
+          task={task}
+          onEdit={() => setIsDetailOpen(true)}
+        >
           <div className="flex flex-1 items-center gap-3">
             <Tooltip content={`Status: ${task.status.replace("-", " ")}`}>
               <div className={`text-${statusConfig[task.status].color}`}>
@@ -64,7 +71,6 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
               </Tooltip>
             )}
           </div>
-
         </ContextMenu>
 
         <div className="px-4">
