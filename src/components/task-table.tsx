@@ -7,6 +7,8 @@ import {
   TableRow,
   TableCell,
   Avatar,
+  Pagination,
+  Divider,
 } from "@heroui/react";
 import { useTaskStore } from "../store/task-store";
 import { TaskDetailModal } from "./task-detail-modal";
@@ -22,7 +24,7 @@ interface TaskTableProps {
 }
 
 export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
-  const { viewOptions, members } = useTaskStore();
+  const { viewOptions, members, itemsPerPage } = useTaskStore();
   const [selectedTask, setSelectedTask] = React.useState<string | null>(null);
 
   const renderCell = (task: any, columnKey: string) => {
@@ -74,12 +76,43 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
     { key: "actions", label: "" },
   ];
 
+  const [page, setPage] = React.useState(1);
+
+  const pages = Math.ceil(filteredTasks.length / itemsPerPage);
+  const items = React.useMemo(() => {
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return filteredTasks.slice(start, end);
+  }, [page, filteredTasks, itemsPerPage]);
+
+  React.useEffect(() => { setPage(1) }, [itemsPerPage])
+
   // Find the selected task if any
   const taskToEdit = selectedTask ? filteredTasks.find((task) => task.id === selectedTask) : null;
 
   return (
     <>
-      <Table aria-label="Tasks table" onRowAction={(key: string) => setSelectedTask(key)}>
+      <Table aria-label="Tasks table" onRowAction={(key: string) => setSelectedTask(key)}
+        bottomContent={
+          <>{pages !== 1 &&
+            <>
+              <Divider />
+              <div className="flex w-full justify-center pt-1">
+                <Pagination
+                  isCompact
+                  showControls
+                  showShadow
+                  color="primary"
+                  page={page}
+                  total={pages}
+                  onChange={(page) => setPage(page)}
+                />
+              </div>
+            </>
+          }
+          </>
+        }
+      >
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn key={column.key} className={column.key === "actions" ? "text-right" : ""}>
@@ -87,7 +120,7 @@ export const TaskTable: React.FC<TaskTableProps> = ({ filteredTasks }) => {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={filteredTasks} emptyContent="No tasks match your filters">
+        <TableBody items={items} emptyContent="No tasks match your filters">
           {(task) => (
             <TableRow key={task.id}>
               {(columnKey) => <TableCell>{renderCell(task, columnKey as string)}</TableCell>}
