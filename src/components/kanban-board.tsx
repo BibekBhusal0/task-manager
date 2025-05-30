@@ -10,6 +10,7 @@ import {
   UniqueIdentifier,
   DragOverlay,
   PointerActivationConstraint,
+  MeasuringStrategy,
 } from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { useTaskStore } from "../store/task-store";
@@ -273,6 +274,7 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
+      measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {columns.map((column) => (
