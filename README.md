@@ -14,7 +14,14 @@ A clean, minimal, and responsive team task manager UI built using HeroUI. Featur
 
 ## 📸 Screenshots
 
-screenshot will be here
+ ![Kanban View](https://github.com/user-attachments/assets/59bdde74-6bf2-4ac9-9769-7297a6968000)
+![List View](https://github.com/user-attachments/assets/af018f6f-e0c9-4cbb-a106-eed4979ee7cf)
+![Table View](https://github.com/user-attachments/assets/1fb114b9-cf04-4c85-bb43-617fe92789ac)
+
+
+https://github.com/user-attachments/assets/018901d1-6f9d-482b-bb77-5bc8ce11ff16
+
+
 
 ## 🔧 Technologies Used
 
@@ -38,7 +45,7 @@ npm run dev
 
 ## 🧩 HeroUI Hackathon
 
-This project was built as a submission to the HeroUI Hackathon under.
+This project was built as a submission to the HeroUI Hackathon.
 
 ## 📜 License
 
