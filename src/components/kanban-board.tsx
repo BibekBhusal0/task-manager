@@ -96,26 +96,26 @@ function Trash({ isVisible }: { isVisible: boolean }) {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          ref={setNodeRef}
-          className={cn(
-            "absolute z-50 transition-all",
-            "bg-default-50 text-danger-800 transition-all",
-            "flex items-center justify-center gap-3",
-            "left-1/2 top-10 h-32 w-72 max-w-full",
-            "rounded-lg border-2 border-dashed border-default-200",
-            overThis && "w-96 border-danger-200 bg-danger-50 text-danger-700"
-          )}
           variants={variants}
           initial="initial"
           animate={"enter"}
           exit="exit"
+          className = 
+            "absolute z-50 transition-all left-1/2 top-10 -translate-x-1/2 "
           transition={{
             type: "spring",
-            stiffness: 100,
-            damping: 20,
+            duration : 0.2
           }}
         >
-          <div
+          <div ref = {setNodeRef} 
+          className={cn(
+            "bg-default-50 text-danger-800 transition-all",
+            "flex items-center justify-center gap-3",
+            "h-32 w-72 max-w-full",
+            "rounded-lg border-2 border-dashed border-default-200",
+            overThis && "w-96 border-danger-200 bg-danger-50 text-danger-700"
+          )}
+          ><div
             className={cn(
               "flex items-center justify-center gap-3 transition-all",
               overThis ? "scale-125 animate-bounce" : "scale-80"
@@ -123,7 +123,7 @@ function Trash({ isVisible }: { isVisible: boolean }) {
           >
             <Icon icon="lucide:trash-2" className="text-2xl" />
             <div className="text-xl">Drop Here To Delete</div>
-          </div>
+          </div></div>
         </motion.div>
       )}
     </AnimatePresence>
