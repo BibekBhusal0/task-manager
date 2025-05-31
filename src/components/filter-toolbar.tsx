@@ -172,17 +172,10 @@ export const FilterToolbar: React.FC = () => {
               label="Max items"
               placeholder="Number"
               selectionMode="single"
-              renderValue={(items) => (
-                <>
-                  {items.map((item) => (
-                    <div className="text-md">{item.key as string}</div>
-                  ))}
-                </>
-              )}
               selectedKeys={[`${itemsPerPage}`]}
             >
               {numbers.map((n) => (
-                <SelectItem key={`${n}`} onPress={() => setItemsPerPage(n)}>
+                <SelectItem key={`${n}`} textValue = {`${ n }`} onPress={() => setItemsPerPage(n)}>
                   {n}
                 </SelectItem>
               ))}
