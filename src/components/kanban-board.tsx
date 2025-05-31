@@ -38,7 +38,7 @@ function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
 
   const isOverThisColumn = over
     ? (id === over.id && active?.data.current?.type !== "column") ||
-      tasks.map((task) => task.id).includes(over.id as string)
+    tasks.map((task) => task.id).includes(over.id as string)
     : false;
 
   return (
@@ -89,15 +89,23 @@ function Trash() {
     <div
       ref={setNodeRef}
       className={cn(
-        "absolute z-50",
-        "bg-danger-50 text-xl text-danger-700",
-        "flex items-center justify-center",
-        "left-1/2 top-10 h-32 w-60 -translate-x-1/2",
-        "rounded-lg border-2 border-dashed border-danger-400",
-        overThis && "border-primary-400"
+        "absolute z-50 transition-all",
+        "bg-default-50 text-danger-800 transition-all",
+        "flex items-center justify-center gap-3",
+        "left-1/2 top-10 h-32 w-72 -translate-x-1/2 max-w-full",
+        "rounded-lg border-2 border-dashed border-default-200",
+        overThis && "bg-danger-50 text-danger-700 border-danger-200 w-96",
       )}
     >
-      Trash
+      <div className={cn(
+        "flex items-center justify-center gap-3 transition-all",
+        overThis ? 'animate-bounce scale-125' : 'scale-80'
+      )}>
+        <Icon icon='lucide:trash-2' className='text-2xl' />
+        <div className='text-xl'>
+          Drop Here To Delete
+        </div>
+      </div>
     </div>
   );
 }
@@ -342,7 +350,7 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
     if (!activeId) return null;
     const activeTask = filteredTasks.find((task) => task.id === activeId);
     if (!activeTask) return null;
-    return <TaskCard task={activeTask} overlay />;
+    return <TaskCard task={activeTask} overlay overTrash={activeId === trashId} />;
   };
 
   return (
@@ -355,7 +363,6 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
       measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
     >
       {activeId !== null && <Trash />}
-      {/* <Trash /> */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {columns.map((column) => (
           <KanbanColumn key={column} id={column} tasks={columnTasks[column]}>

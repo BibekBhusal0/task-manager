@@ -13,9 +13,10 @@ import { ContextMenu } from "./task-actions-dropdown";
 interface TaskCardProps {
   task: Task;
   overlay?: boolean;
+  overTrash?: boolean;
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false , overTrash }) => {
   const viewOptions = useTaskStore().viewOptions;
   const { members } = useTaskStore();
   const [isDetailOpen, setIsDetailOpen] = React.useState(false);
@@ -43,7 +44,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false }) => 
         className={cn(
           "cursor-pointer bg-default-100 opacity-100 shadow-sm transition-all hover:shadow-md",
           isDragging && "opacity-70",
-          overlay && "rotate-2 cursor-grabbing bg-default-200"
+          overlay && "rotate-2 cursor-grabbing bg-default-200",
+          overTrash && "border border-danger"
         )}
         style={style}
       >
