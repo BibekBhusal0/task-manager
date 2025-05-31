@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { useTaskStore } from "../store/task-store";
 import { Task, TaskStatus } from "../types/task";
 import {
@@ -37,6 +37,7 @@ export const DropdownList: React.FC<TaskActionsDropdownProps & { onClose?: () =>
     <Listbox selectionMode="none" aria-label="Task actions">
       <ListboxItem
         key="edit"
+        textValue="edit"
         startContent={<Icon icon="lucide:edit" className="text-sm" />}
         onPress={handleEdit}
       >
@@ -44,21 +45,23 @@ export const DropdownList: React.FC<TaskActionsDropdownProps & { onClose?: () =>
       </ListboxItem>
       <>
         {Object.entries(statusConfig).map(([status, config]) => (
-          <>
+          <Fragment key = {status}>
             {status !== task.status && (
               <ListboxItem
                 key={status}
+                textValue={status}
                 startContent={<Icon icon={config.icon} className="text-sm" />}
                 onPress={() => changeStatus(task.id, status as TaskStatus)}
               >
                 Move to {config.title}
               </ListboxItem>
             )}
-          </>
+          </Fragment>
         ))}
       </>
       <ListboxItem
         key="delete"
+        textValue="delete"
         color="danger"
         startContent={<Icon icon="lucide:trash" className="text-sm" />}
         onPress={handleDelete}
