@@ -49,9 +49,7 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
                 {viewOptions.showTags && <TagsChip tags={task.tags} />}
 
                 {viewOptions.showPriority && (
-                  <Tooltip content={`Priority: ${task.priority}`}>
-                    <PriorityChip priority={task.priority} />
-                  </Tooltip>
+                  <PriorityChip priority={task.priority} />
                 )}
               </div>
             </div>
