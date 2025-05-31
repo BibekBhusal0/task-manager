@@ -39,7 +39,7 @@ function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
 
   const isOverThisColumn = over
     ? (id === over.id && active?.data.current?.type !== "column") ||
-    tasks.map((task) => task.id).includes(over.id as string)
+      tasks.map((task) => task.id).includes(over.id as string)
     : false;
 
   return (
@@ -82,15 +82,14 @@ function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
   );
 }
 
-
 function Trash({ isVisible }: { isVisible: boolean }) {
   const { setNodeRef, over } = useDroppable({ id: "trash", data: { type: "trash" } });
   const overThis = over?.id === "trash";
 
   const variants = {
-    initial: { opacity: 0, scale: 0, filter: 'blur(9px)', x: '-50%' },
-    enter: { opacity: 1, scale: 1, filter: 'blur(0px)' },
-    exit: { opacity: 0, scale: overThis ? 1.5 : 0, filter: 'blur(9px)' },
+    initial: { opacity: 0, scale: 0, filter: "blur(9px)", x: "-50%" },
+    enter: { opacity: 1, scale: 1, filter: "blur(0px)" },
+    exit: { opacity: 0, scale: overThis ? 1.5 : 0, filter: "blur(9px)" },
   };
 
   return (
@@ -104,7 +103,7 @@ function Trash({ isVisible }: { isVisible: boolean }) {
             "flex items-center justify-center gap-3",
             "left-1/2 top-10 h-32 w-72 max-w-full",
             "rounded-lg border-2 border-dashed border-default-200",
-            overThis && "bg-danger-50 text-danger-700 border-danger-200 w-96",
+            overThis && "w-96 border-danger-200 bg-danger-50 text-danger-700"
           )}
           variants={variants}
           initial="initial"
@@ -116,22 +115,20 @@ function Trash({ isVisible }: { isVisible: boolean }) {
             damping: 20,
           }}
         >
-          <div className={cn(
-            "flex items-center justify-center gap-3 transition-all",
-            overThis ? 'animate-bounce scale-125' : 'scale-80'
-          )}>
-            <Icon icon='lucide:trash-2' className='text-2xl' />
-            <div className='text-xl'>
-              Drop Here To Delete
-            </div>
+          <div
+            className={cn(
+              "flex items-center justify-center gap-3 transition-all",
+              overThis ? "scale-125 animate-bounce" : "scale-80"
+            )}
+          >
+            <Icon icon="lucide:trash-2" className="text-2xl" />
+            <div className="text-xl">Drop Here To Delete</div>
           </div>
         </motion.div>
       )}
     </AnimatePresence>
   );
 }
-
-
 
 export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
   const changeStatus = useTaskStore((state) => state.changeStatus);
