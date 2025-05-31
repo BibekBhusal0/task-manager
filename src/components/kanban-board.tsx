@@ -20,6 +20,7 @@ import { statusConfig } from "./status-chip";
 import { TaskCard } from "./task-card";
 import { Icon } from "@iconify/react";
 import { AddTaskModal } from "./add-task-modal";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface KanbanBoardProps {
   filteredTasks: Task[];
@@ -81,34 +82,56 @@ function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
   );
 }
 
-function Trash() {
+
+function Trash({ isVisible }: { isVisible: boolean }) {
   const { setNodeRef, over } = useDroppable({ id: "trash", data: { type: "trash" } });
   const overThis = over?.id === "trash";
 
+  const variants = {
+    initial: { opacity: 0, scale: 0, filter: 'blur(9px)', x: '-50%' },
+    enter: { opacity: 1, scale: 1, filter: 'blur(0px)' },
+    exit: { opacity: 0, scale: overThis ? 1.5 : 0, filter: 'blur(9px)' },
+  };
+
   return (
-    <div
-      ref={setNodeRef}
-      className={cn(
-        "absolute z-50 transition-all",
-        "bg-default-50 text-danger-800 transition-all",
-        "flex items-center justify-center gap-3",
-        "left-1/2 top-10 h-32 w-72 -translate-x-1/2 max-w-full",
-        "rounded-lg border-2 border-dashed border-default-200",
-        overThis && "bg-danger-50 text-danger-700 border-danger-200 w-96",
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          ref={setNodeRef}
+          className={cn(
+            "absolute z-50 transition-all",
+            "bg-default-50 text-danger-800 transition-all",
+            "flex items-center justify-center gap-3",
+            "left-1/2 top-10 h-32 w-72 max-w-full",
+            "rounded-lg border-2 border-dashed border-default-200",
+            overThis && "bg-danger-50 text-danger-700 border-danger-200 w-96",
+          )}
+          variants={variants}
+          initial="initial"
+          animate={"enter"}
+          exit="exit"
+          transition={{
+            type: "spring",
+            stiffness: 100,
+            damping: 20,
+          }}
+        >
+          <div className={cn(
+            "flex items-center justify-center gap-3 transition-all",
+            overThis ? 'animate-bounce scale-125' : 'scale-80'
+          )}>
+            <Icon icon='lucide:trash-2' className='text-2xl' />
+            <div className='text-xl'>
+              Drop Here To Delete
+            </div>
+          </div>
+        </motion.div>
       )}
-    >
-      <div className={cn(
-        "flex items-center justify-center gap-3 transition-all",
-        overThis ? 'animate-bounce scale-125' : 'scale-80'
-      )}>
-        <Icon icon='lucide:trash-2' className='text-2xl' />
-        <div className='text-xl'>
-          Drop Here To Delete
-        </div>
-      </div>
-    </div>
+    </AnimatePresence>
   );
 }
+
+
 
 export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
   const changeStatus = useTaskStore((state) => state.changeStatus);
@@ -362,7 +385,8 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
       onDragCancel={handleDragCancel}
       measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
     >
-      {activeId !== null && <Trash />}
+      {/* {activeId !== null && <Trash />} */}
+      <Trash isVisible={activeId !== null} />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {columns.map((column) => (
           <KanbanColumn key={column} id={column} tasks={columnTasks[column]}>

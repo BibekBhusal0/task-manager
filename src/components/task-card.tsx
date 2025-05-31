@@ -16,7 +16,7 @@ interface TaskCardProps {
   overTrash?: boolean;
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false , overTrash }) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ task, overlay = false, overTrash }) => {
   const viewOptions = useTaskStore().viewOptions;
   const { members } = useTaskStore();
   const [isDetailOpen, setIsDetailOpen] = React.useState(false);
