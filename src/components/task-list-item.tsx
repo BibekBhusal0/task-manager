@@ -48,9 +48,7 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({ task, viewOptions })
               <div className="mt-1 flex flex-wrap items-center gap-2">
                 {viewOptions.showTags && <TagsChip tags={task.tags} />}
 
-                {viewOptions.showPriority && (
-                  <PriorityChip priority={task.priority} />
-                )}
+                {viewOptions.showPriority && <PriorityChip priority={task.priority} />}
               </div>
             </div>
           </div>

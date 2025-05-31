@@ -17,11 +17,10 @@ interface TaskActionsDropdownProps {
   onEdit: () => void;
 }
 
-export const DropdownList = React.forwardRef<HTMLUListElement, TaskActionsDropdownProps & { onClose?: () => void }>(({
-  onEdit,
-  task,
-  onClose = () => { },
-}, ref) => {
+export const DropdownList = React.forwardRef<
+  HTMLUListElement,
+  TaskActionsDropdownProps & { onClose?: () => void }
+>(({ onEdit, task, onClose = () => {} }, ref) => {
   const { deleteTask, changeStatus } = useTaskStore();
 
   const handleDelete = () => {
@@ -133,19 +132,19 @@ export const ContextMenu = React.forwardRef<HTMLDivElement, ContextMenuProps>(
           let y = event.clientY;
           const screenWidth = screen.width;
           const screenHeight = screen.height;
-          if (x + menuDimensions.width > screenWidth) x = x - menuDimensions.width
-          if (y + menuDimensions.height > screenHeight) y = y - menuDimensions.height
-          return { x, y }
-        })
+          if (x + menuDimensions.width > screenWidth) x = x - menuDimensions.width;
+          if (y + menuDimensions.height > screenHeight) y = y - menuDimensions.height;
+          return { x, y };
+        });
         setIsOpen(true);
       },
-      [disabled,menuDimensions]
+      [disabled, menuDimensions]
     );
 
     return (
       <Popover
         isOpen={isOpen}
-        motionProps ={{exit: {}}}
+        motionProps={{ exit: {} }}
         onOpenChange={setIsOpen}
         shouldCloseOnBlur
         shouldCloseOnScroll
@@ -159,7 +158,7 @@ export const ContextMenu = React.forwardRef<HTMLDivElement, ContextMenuProps>(
         <div className="w-full" onContextMenu={handleContextMenu} ref={ref} {...props}>
           {children}
         </div>
-        <PopoverContent >
+        <PopoverContent>
           <DropdownList onClose={() => setIsOpen(false)} {...{ task, onEdit }} ref={contentRef} />
         </PopoverContent>
       </Popover>

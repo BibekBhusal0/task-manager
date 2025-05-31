@@ -175,7 +175,7 @@ export const FilterToolbar: React.FC = () => {
               selectedKeys={[`${itemsPerPage}`]}
             >
               {numbers.map((n) => (
-                <SelectItem key={`${n}`} textValue = {`${ n }`} onPress={() => setItemsPerPage(n)}>
+                <SelectItem key={`${n}`} textValue={`${n}`} onPress={() => setItemsPerPage(n)}>
                   {n}
                 </SelectItem>
               ))}

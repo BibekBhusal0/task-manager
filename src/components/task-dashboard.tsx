@@ -1,5 +1,5 @@
 import React from "react";
-import { Tabs, Tab, } from "@heroui/react";
+import { Tabs, Tab } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTaskStore } from "../store/task-store";
