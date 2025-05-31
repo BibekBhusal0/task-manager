@@ -39,7 +39,7 @@ function KanbanColumn({ id, tasks, children }: KanbanColumnProps) {
 
   const isOverThisColumn = over
     ? (id === over.id && active?.data.current?.type !== "column") ||
-    tasks.map((task) => task.id).includes(over.id as string)
+      tasks.map((task) => task.id).includes(over.id as string)
     : false;
 
   return (
@@ -344,11 +344,14 @@ export function KanbanBoard({ filteredTasks }: KanbanBoardProps) {
     }
 
     if (trashId === active.id) {
-      const activeTask = filteredTasks.find((task) => task.id === trashId)
-      if (!activeTask) return
-      const activeColumnId = activeTask.status
-      setColumnTasks((prev) => ({ ...prev, [activeColumnId]: [activeTask, ...prev[activeColumnId]] }))
-      return
+      const activeTask = filteredTasks.find((task) => task.id === trashId);
+      if (!activeTask) return;
+      const activeColumnId = activeTask.status;
+      setColumnTasks((prev) => ({
+        ...prev,
+        [activeColumnId]: [activeTask, ...prev[activeColumnId]],
+      }));
+      return;
     }
 
     const activeColumnId = findColumnForTask(active.id);
